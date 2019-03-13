@@ -1,6 +1,7 @@
 ﻿using LinqToRest.LinqToRest.Expressions;
 using System;
 using System.Linq.Expressions;
+using QueryProvider.QueryProvider;
 using BaseQueryProvider = QueryProvider.QueryProvider.QueryProvider;
 
 namespace LinqToRest.LinqToRest
@@ -10,14 +11,14 @@ namespace LinqToRest.LinqToRest
     public class QueryProvider : BaseQueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
-        private readonly Uri _root;
         private readonly QueryBinderFactory _queryBinderFactory;
+        private readonly Uri _root;
 
-        public QueryProvider(IResourceRetriever resourceRetriever, UpdateServerUri root, QueryBinderFactory queryBinderFactory)
+        public QueryProvider(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory, Uri root)
         {
             _resourceRetriever = resourceRetriever;
             _queryBinderFactory = queryBinderFactory;
-            _root = root.Uri;
+            _root = root;
         }
 
         public override string GetQueryText(Expression expression)

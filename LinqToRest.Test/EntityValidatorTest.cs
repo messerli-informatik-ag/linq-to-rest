@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using JetBrains.Annotations;
+using LinqToRest.LinqToRest.Entities;
+using System.Collections.Generic;
 using Xunit;
 
 namespace LinqToRest.LinqToRest.Test

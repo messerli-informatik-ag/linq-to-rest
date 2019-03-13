@@ -1,8 +1,11 @@
-﻿using LinqToRest.LinqToRest.Entities;
+﻿using JetBrains.Annotations;
+using LinqToRest.LinqToRest.Entities;
+using Soltys.ChangeCase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Utility.Utility.Extension;
 
 namespace LinqToRest.LinqToRest
 {
