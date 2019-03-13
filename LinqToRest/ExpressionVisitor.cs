@@ -1,11 +1,11 @@
-﻿using LinqToRest.LinqToRest.Declarations;
-using LinqToRest.LinqToRest.Expressions;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using Utility.Utility.Extension;
+using LinqToRest.Declarations;
+using LinqToRest.Expressions;
+using Utility.Extension;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     public class ExpressionVisitor : System.Linq.Expressions.ExpressionVisitor
     {

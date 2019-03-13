@@ -1,9 +1,9 @@
-﻿using JetBrains.Annotations;
-using LinqToRest.LinqToRest.Entities;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
+using JetBrains.Annotations;
+using LinqToRest.Entities;
 using Xunit;
 
-namespace LinqToRest.LinqToRest.Test
+namespace LinqToRest.Test
 {
     public class EntityValidatorTest
     {

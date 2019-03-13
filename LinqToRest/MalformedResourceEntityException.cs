@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     public class MalformedResourceEntityException : Exception
     {

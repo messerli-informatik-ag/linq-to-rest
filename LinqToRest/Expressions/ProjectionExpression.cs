@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace LinqToRest.LinqToRest.Expressions
+namespace LinqToRest.Expressions
 {
     public class ProjectionExpression : Expression
     {

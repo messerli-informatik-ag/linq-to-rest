@@ -1,4 +1,4 @@
-﻿namespace LinqToRest.LinqToRest
+﻿namespace LinqToRest
 {
     internal enum ExpressionType
     {

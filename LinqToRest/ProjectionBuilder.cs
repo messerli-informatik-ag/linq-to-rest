@@ -1,8 +1,8 @@
-﻿using LinqToRest.LinqToRest.Expressions;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using LinqToRest.Expressions;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     internal class ProjectionBuilder : ExpressionVisitor
     {

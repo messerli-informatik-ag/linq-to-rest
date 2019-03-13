@@ -1,8 +1,8 @@
-﻿using LinqToRest.LinqToRest.Declarations;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
+using LinqToRest.Declarations;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     internal sealed class ProjectedFields
     {

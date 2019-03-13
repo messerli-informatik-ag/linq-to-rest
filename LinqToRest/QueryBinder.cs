@@ -1,13 +1,13 @@
-﻿using LinqToRest.LinqToRest.Declarations;
-using LinqToRest.LinqToRest.Expressions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using LinqToRest.Declarations;
+using LinqToRest.Expressions;
 using Soltys.ChangeCase;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     public class QueryBinder : ExpressionVisitor
     {

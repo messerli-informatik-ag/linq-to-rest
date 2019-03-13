@@ -1,4 +1,4 @@
-﻿namespace LinqToRest.LinqToRest.Entities
+﻿namespace LinqToRest.Entities
 {
     public interface IEntity
     {

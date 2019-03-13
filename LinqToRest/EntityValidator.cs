@@ -1,13 +1,13 @@
-﻿using JetBrains.Annotations;
-using LinqToRest.LinqToRest.Entities;
-using Soltys.ChangeCase;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using Utility.Utility.Extension;
+using JetBrains.Annotations;
+using LinqToRest.Entities;
+using Soltys.ChangeCase;
+using Utility.Extension;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     [UsedImplicitly]
     public class EntityValidator : IEntityValidator
@@ -49,7 +49,7 @@ namespace LinqToRest.LinqToRest
                 .ForEach(tuple =>
                 {
                     var propertyName = tuple.property.Name;
-                    var expectedName = propertyName.CamelCase();
+                    var expectedName = ChangeCaseExtensions.CamelCase(propertyName);
                     var expectedType = tuple.property.PropertyType;
                     var actualName = tuple.parameter.Name;
                     var actualType = tuple.parameter.ParameterType;

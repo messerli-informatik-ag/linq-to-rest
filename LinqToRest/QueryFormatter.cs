@@ -1,13 +1,13 @@
-﻿using LinqToRest.LinqToRest.Declarations;
-using LinqToRest.LinqToRest.Expressions;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
-using Utility.Utility.Extension;
+using LinqToRest.Declarations;
+using LinqToRest.Expressions;
+using Utility.Extension;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     internal class QueryFormatter : ExpressionVisitor
     {

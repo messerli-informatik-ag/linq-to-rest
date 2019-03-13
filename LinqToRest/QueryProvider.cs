@@ -1,15 +1,14 @@
-﻿using LinqToRest.LinqToRest.Expressions;
-using QueryProvider.QueryProvider;
-using ResourceRetriever;
-using System;
+﻿using System;
 using System.Linq.Expressions;
-using BaseQueryProvider = QueryProvider.QueryProvider.QueryProvider;
+using LinqToRest.Expressions;
+using QueryProvider;
+using ResourceRetriever;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     public delegate QueryBinder QueryBinderFactory();
 
-    public class QueryProvider : BaseQueryProvider
+    public class QueryProvider : global::QueryProvider.QueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;

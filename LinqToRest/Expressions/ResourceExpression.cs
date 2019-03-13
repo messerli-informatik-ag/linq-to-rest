@@ -1,9 +1,9 @@
-﻿using LinqToRest.LinqToRest.Declarations;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
+using LinqToRest.Declarations;
 
-namespace LinqToRest.LinqToRest.Expressions
+namespace LinqToRest.Expressions
 {
     public class ResourceExpression : Expression
     {

@@ -1,9 +1,9 @@
-﻿using ResourceRetriever;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using ResourceRetriever;
 
-namespace LinqToRest.LinqToRest
+namespace LinqToRest
 {
     public class ProjectionReader<T> : IEnumerable<T>
     {

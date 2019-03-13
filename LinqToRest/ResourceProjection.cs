@@ -1,4 +1,4 @@
-﻿namespace LinqToRest.LinqToRest
+﻿namespace LinqToRest
 {
     public abstract class ResourceProjection
     {
