@@ -1,17 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
     <RootNamespace>LinqToRest.LinqToRest</RootNamespace>
   </PropertyGroup>
-
-  <ItemGroup>
-    <PackageReference Include="Soltys.ChangeCase" Version="1.6.0" />
-  </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\QueryProvider\QueryProvider\QueryProvider.csproj" />
     <ProjectReference Include="..\..\Utility\Utility\Utility.csproj" />
   </ItemGroup>
-
+  <Import Project="..\..\.paket\Paket.Restore.targets" />
 </Project>
