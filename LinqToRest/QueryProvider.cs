@@ -1,6 +1,6 @@
-﻿using JsonDeserializer;
-using LinqToRest.LinqToRest.Expressions;
+﻿using LinqToRest.LinqToRest.Expressions;
 using QueryProvider.QueryProvider;
+using ResourceRetriever;
 using System;
 using System.Linq.Expressions;
 using BaseQueryProvider = QueryProvider.QueryProvider.QueryProvider;
