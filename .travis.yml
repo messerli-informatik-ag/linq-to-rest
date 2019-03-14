@@ -1,0 +1,33 @@
+dist: xenial
+language: generic
+
+env:
+  - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1 DOTNET_CLI_TELEMETRY_OPTOUT=1
+
+install:
+ # Add GPG keys
+ - sudo apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 762E3157
+
+ # Add mono repos
+ - curl https://origin-download.mono-project.com/repo/xamarin.gpg | sudo apt-key add -
+
+ # Add .NET repos
+ - wget -q https://packages.microsoft.com/config/ubuntu/16.04/packages-microsoft-prod.deb
+ - sudo dpkg -i packages-microsoft-prod.deb
+
+ # Setup certificates
+ - sudo apt install apt-transport-https ca-certificates -y
+
+ # Add mono repos
+ - echo "deb https://download.mono-project.com/repo/ubuntu stable-xenial main" | sudo tee /etc/apt/sources.list.d/mono-official-stable.list
+ 
+ - sudo apt update
+
+ - sudo apt install mono-devel
+ - sudo apt install dotnet-sdk-2.2
+
+script:
+ - mono ./.paket/paket.exe install
+ - dotnet restore
+ - dotnet build
+ - dotnet test

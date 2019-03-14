@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     public class MalformedResourceEntityException : Exception
     {

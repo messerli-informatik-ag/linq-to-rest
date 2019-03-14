@@ -1,2 +1,5 @@
 JetBrains.Annotations
 Soltys.ChangeCase
+Messerli.Utility
+Messerli.ServerCommunication
+Messerli.QueryProvider

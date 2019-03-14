@@ -1,4 +1,4 @@
-﻿namespace LinqToRest.Entities
+﻿namespace Messerli.LinqToRest.Entities
 {
     public interface IEntity
     {

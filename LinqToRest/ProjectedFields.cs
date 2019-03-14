@@ -1,8 +1,8 @@
 ﻿using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using LinqToRest.Declarations;
+using Messerli.LinqToRest.Declarations;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     internal sealed class ProjectedFields
     {

@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using LinqToRest.Declarations;
-using LinqToRest.Expressions;
+using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Expressions;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     internal class FieldProjector : ExpressionVisitor
     {

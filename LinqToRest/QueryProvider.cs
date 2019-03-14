@@ -1,14 +1,14 @@
 ﻿using System;
 using System.Linq.Expressions;
-using LinqToRest.Expressions;
-using QueryProvider;
-using ResourceRetriever;
+using Messerli.LinqToRest.Expressions;
+using Messerli.QueryProvider;
+using Messerli.ServerCommunication;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     public delegate QueryBinder QueryBinderFactory();
 
-    public class QueryProvider : global::QueryProvider.QueryProvider
+    public class QueryProvider : Messerli.QueryProvider.QueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;

@@ -1,6 +1,6 @@
 ﻿using System.Linq.Expressions;
 
-namespace LinqToRest.Declarations
+namespace Messerli.LinqToRest.Declarations
 {
     internal class FieldDeclaration
     {

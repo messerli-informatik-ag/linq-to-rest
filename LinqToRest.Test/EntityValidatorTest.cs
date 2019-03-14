@@ -1,9 +1,9 @@
 ﻿using System.Collections.Generic;
 using JetBrains.Annotations;
-using LinqToRest.Entities;
+using Messerli.LinqToRest.Entities;
 using Xunit;
 
-namespace LinqToRest.Test
+namespace Messerli.LinqToRest.Test
 {
     public class EntityValidatorTest
     {

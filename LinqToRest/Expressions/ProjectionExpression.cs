@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq.Expressions;
 
-namespace LinqToRest.Expressions
+namespace Messerli.LinqToRest.Expressions
 {
     public class ProjectionExpression : Expression
     {
