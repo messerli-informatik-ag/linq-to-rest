@@ -9,5 +9,5 @@
     <ProjectReference Include="..\..\ServerCommunication\ResourceRetriever\ResourceRetriever.csproj" />
     <ProjectReference Include="..\..\Utility\Utility\Utility.csproj" />
   </ItemGroup>
-  <Import Project="..\..\.paket\Paket.Restore.targets" />
+  <Import Project="..\.paket\Paket.Restore.targets" />
 </Project>
