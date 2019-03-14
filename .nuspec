@@ -8,7 +8,7 @@
         <projectUrl>http://github.com/messerli-informatik-ag/linq-to-rest</projectUrl>
         <license type="expression">MIT or Apache-2.0</license>
         <description>A LINQ QueryProvider that uses a REST API as its data source.</description>
-        <copyright>Copyright ©2019 Messerli Informatik Ag</copyright>
+        <copyright>Copyright ©2019 Messerli Informatik AG</copyright>
         <tags>utility query linq rest</tags>
     </metadata>
 </package>
