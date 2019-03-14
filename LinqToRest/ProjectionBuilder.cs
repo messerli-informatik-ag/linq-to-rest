@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Linq.Expressions;
-using LinqToRest.Expressions;
+using Messerli.LinqToRest.Expressions;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     internal class ProjectionBuilder : ExpressionVisitor
     {

@@ -1,11 +1,11 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
-using LinqToRest.Declarations;
-using LinqToRest.Expressions;
-using Utility.Extension;
+using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Expressions;
+using Messerli.Utility.Extension;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     public class ExpressionVisitor : System.Linq.Expressions.ExpressionVisitor
     {

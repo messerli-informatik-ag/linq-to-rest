@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using ResourceRetriever;
+using Messerli.ServerCommunication;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     public class ProjectionReader<T> : IEnumerable<T>
     {
@@ -14,7 +14,10 @@ namespace LinqToRest
             _enumerator = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result.GetEnumerator();
         }
 
-        public IEnumerator<T> GetEnumerator() => _enumerator;
+        public IEnumerator<T> GetEnumerator()
+        {
+            return _enumerator;
+        }
 
         IEnumerator IEnumerable.GetEnumerator()
         {

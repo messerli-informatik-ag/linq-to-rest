@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using LinqToRest.Declarations;
-using LinqToRest.Expressions;
+using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Expressions;
 using Soltys.ChangeCase;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     public class QueryBinder : ExpressionVisitor
     {

@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using JetBrains.Annotations;
-using LinqToRest.Entities;
+using Messerli.LinqToRest.Entities;
+using Messerli.Utility.Extension;
 using Soltys.ChangeCase;
-using Utility.Extension;
 
-namespace LinqToRest
+namespace Messerli.LinqToRest
 {
     [UsedImplicitly]
     public class EntityValidator : IEntityValidator
