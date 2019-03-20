@@ -1,9 +1,9 @@
-﻿using System;
+﻿using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Expressions;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq.Expressions;
-using Messerli.LinqToRest.Declarations;
-using Messerli.LinqToRest.Expressions;
 
 namespace Messerli.LinqToRest
 {

@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Messerli.LinqToRest.Declarations;
+using System;
 using System.Collections.Generic;
 using System.Linq.Expressions;
-using Messerli.LinqToRest.Declarations;
 
 namespace Messerli.LinqToRest.Expressions
 {

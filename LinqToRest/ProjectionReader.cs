@@ -1,7 +1,7 @@
-﻿using System;
+﻿using Messerli.ServerCommunication;
+using System;
 using System.Collections;
 using System.Collections.Generic;
-using Messerli.ServerCommunication;
 
 namespace Messerli.LinqToRest
 {

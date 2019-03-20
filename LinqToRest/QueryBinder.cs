@@ -1,11 +1,11 @@
-﻿using System;
+﻿using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Expressions;
+using Soltys.ChangeCase;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using Messerli.LinqToRest.Declarations;
-using Messerli.LinqToRest.Expressions;
-using Soltys.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
