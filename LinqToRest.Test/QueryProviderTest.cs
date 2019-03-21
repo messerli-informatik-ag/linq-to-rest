@@ -13,59 +13,57 @@ namespace Messerli.LinqToRest.Test
         [Fact]
         public void ReturnsRestQuery()
         {
-            var serviceUri = ResolveServiceUri();
+            var serviceUri = MockServiceUri();
 
-            var resourceRetriever = ResolveResourceRetriever();
-            var objectResolver = ResolveObjectResolver();
-            var queryBinderFactory = ResolveQueryBinderFactory();
+            var resourceRetriever = MockResourceRetriever();
+            var queryBinderFactory = MockQueryBinderFactory();
 
 
             var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, serviceUri);
-            var query = new Query<ClassWithQueryableMember>(queryProvider);
+            var query = new Query<EntityWithQueryableMember>(queryProvider);
 
             var restQuery = query.ToString();
 
             Assert.Equal($"{serviceUri.AbsoluteUri}classwithqueryablemembers", restQuery);
         }
 
-        private static Uri ResolveServiceUri()
+        private static Uri MockServiceUri()
         {
             const string root = "http://www.exapmle.com/api/v1/";
             return new UriBuilder(root).Uri;
         }
 
-        private static IResourceRetriever ResolveResourceRetriever()
+        private static IResourceRetriever MockResourceRetriever()
         {
             var resourceRetriever = Substitute.For<IResourceRetriever>();
 
-            // Mock
-            var uri = new Uri(ResolveServiceUri(), "test");
+            var uri = new Uri(MockServiceUri(), "test");
             var result = new[]
             {
-                new ClassWithQueryableMember("Test1", null),
-                new ClassWithQueryableMember("Test2", null)
+                new EntityWithQueryableMember("Test1", null),
+                new EntityWithQueryableMember("Test2", null)
             };
-            resourceRetriever.RetrieveResource<IEnumerable<ClassWithQueryableMember>>(uri).Returns(result);
+            resourceRetriever.RetrieveResource<IEnumerable<EntityWithQueryableMember>>(uri).Returns(result);
 
             return resourceRetriever;
         }
 
-        private static IObjectResolver ResolveObjectResolver()
+        private static IObjectResolver MockObjectResolver()
         {
-            var queryableFactory = new QueryableFactory(ResolveQueryProviderFactory());
+            var queryableFactory = new QueryableFactory(MockQueryProvider());
 
             return new QueryableObjectResolver(queryableFactory);
         }
 
-        private static QueryProvider ResolveQueryProviderFactory()
+        private static QueryProvider MockQueryProvider()
         {
             return new QueryProvider(
-                ResolveResourceRetriever(),
-                ResolveQueryBinderFactory(),
-                ResolveServiceUri());
+                MockResourceRetriever(),
+                MockQueryBinderFactory(),
+                MockServiceUri());
         }
 
-        private static QueryBinderFactory ResolveQueryBinderFactory()
+        private static QueryBinderFactory MockQueryBinderFactory()
         {
             var queryBinderFactory = Substitute.For<QueryBinderFactory>();
             queryBinderFactory().Returns(new QueryBinder(new EntityValidator()));

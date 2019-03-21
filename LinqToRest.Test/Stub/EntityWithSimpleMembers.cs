@@ -6,9 +6,9 @@ using Messerli.LinqToRest.Entities;
 
 namespace Messerli.LinqToRest.Test.Stub
 {
-    public class ClassWithSimpleMembers : IEntity
+    public class EntityWithSimpleMembers : IEntity
     {
-        public ClassWithSimpleMembers(string name, int number)
+        public EntityWithSimpleMembers(string name, int number)
         {
             Name = name;
             Number = number;
