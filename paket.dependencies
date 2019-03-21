@@ -7,3 +7,4 @@ nuget Messerli.ServerCommunication ~> 0.1
 nuget Messerli.QueryProvider ~> 0.1
 nuget JetBrains.Annotations ~> 2018.2
 nuget Soltys.ChangeCase ~> 1.6
+nuget NSubstitute ~> 4.0
