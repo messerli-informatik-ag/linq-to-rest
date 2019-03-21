@@ -31,6 +31,7 @@ namespace Messerli.LinqToRest.Test
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
+
         [Fact]
         public void ReturnsRestQueryWithSelectedUniqueIdentifier()
         {
