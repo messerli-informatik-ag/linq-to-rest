@@ -13,20 +13,23 @@ namespace Messerli.LinqToRest.Test
         [Fact]
         public void ReturnsRestQuery()
         {
-            var serviceUri = MockServiceUri();
-
-            var resourceRetriever = MockResourceRetriever();
-            var queryBinderFactory = MockQueryBinderFactory();
-
-
-            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, serviceUri);
-            var query = new Query<EntityWithQueryableMember>(queryProvider);
-
+            var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.ToString();
+            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers";
 
-            var expectedRestQuery = $"{serviceUri.AbsoluteUri}entitywithqueryablemembers";
             Assert.Equal(expectedRestQuery, restQuery);
         }
+
+        private static Query<T> CreateQuery<T>()
+        {
+            var serviceUri = MockServiceUri();
+            var resourceRetriever = MockResourceRetriever();
+            var queryBinderFactory = MockQueryBinderFactory();
+            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, serviceUri);
+
+            return new Query<T>(queryProvider);
+        }
+
 
         private static Uri MockServiceUri()
         {
