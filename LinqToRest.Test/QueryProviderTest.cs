@@ -79,14 +79,6 @@ namespace Messerli.LinqToRest.Test
             return @object.GetType().GetPropertyValues(@object);
         }
 
-        private static QueryProvider MockQueryProviderFactory()
-        {
-            return new QueryProvider(
-                MockResourceRetriever(),
-                MockQueryBinderFactory(),
-                MockServiceUri());
-        }
-
         private static Query<T> CreateQuery<T>()
         {
             var serviceUri = MockServiceUri();
