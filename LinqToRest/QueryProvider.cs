@@ -1,8 +1,8 @@
-﻿using System;
-using System.Linq.Expressions;
-using Messerli.LinqToRest.Expressions;
+﻿using Messerli.LinqToRest.Expressions;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
+using System;
+using System.Linq.Expressions;
 
 namespace Messerli.LinqToRest
 {

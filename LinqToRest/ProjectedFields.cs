@@ -1,6 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using Messerli.LinqToRest.Declarations;
+using System.Collections.ObjectModel;
 using System.Linq.Expressions;
-using Messerli.LinqToRest.Declarations;
 
 namespace Messerli.LinqToRest
 {

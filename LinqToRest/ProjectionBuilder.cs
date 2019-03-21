@@ -1,6 +1,6 @@
-﻿using System;
+﻿using Messerli.LinqToRest.Expressions;
+using System;
 using System.Linq.Expressions;
-using Messerli.LinqToRest.Expressions;
 
 namespace Messerli.LinqToRest
 {
