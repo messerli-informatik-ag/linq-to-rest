@@ -27,7 +27,7 @@ namespace Messerli.LinqToRest.Test
         {
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.Select(entity => new { entity.Name }).ToString();
-            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?filter=uniqueIdentifier,name";
+            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?fields=uniqueIdentifier,name";
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
@@ -37,7 +37,7 @@ namespace Messerli.LinqToRest.Test
         {
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.Select(entity => new { entity.UniqueIdentifier, entity.Name }).ToString();
-            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?filter=uniqueIdentifier,name";
+            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?fields=uniqueIdentifier,name";
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
