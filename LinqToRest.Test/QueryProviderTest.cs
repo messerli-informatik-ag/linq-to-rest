@@ -27,7 +27,7 @@ namespace Messerli.LinqToRest.Test
         {
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.Select(entity => new { entity.Name }).ToString();
-            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers?filter=uniqueIdentifier,name";
+            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?filter=uniqueIdentifier,name";
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
@@ -37,7 +37,7 @@ namespace Messerli.LinqToRest.Test
         {
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.Select(entity => new { entity.UniqueIdentifier, entity.Name }).ToString();
-            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers?filter=uniqueIdentifier,name";
+            var expectedRestQuery = $"{EntityWithQueryableMemberUri()}?filter=uniqueIdentifier,name";
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
@@ -72,6 +72,11 @@ namespace Messerli.LinqToRest.Test
                             (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
                         .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
                 });
+        }
+
+        private static Uri EntityWithQueryableMemberUri()
+        {
+            return new Uri(MockServiceUri(), "entitywithqueryablemembers");
         }
 
         private static IEnumerable<object> GetPropertyValues(object @object)
