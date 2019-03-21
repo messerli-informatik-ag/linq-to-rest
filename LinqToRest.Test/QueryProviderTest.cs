@@ -37,13 +37,13 @@ namespace Messerli.LinqToRest.Test
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
             // which executes queries :(
             expectedQueryObject
-                .Zip(queryResult, (expected, actual) => new { expected, actual })
+                .Zip(queryResult, (expectedEntity, actualEntity) => new { expectedEntity, actualEntity })
                 .ForEach(obj =>
                 {
-                    obj.expected.GetType().GetPropertyValues(obj.expected)
-                        .Zip(obj.actual.GetType().GetPropertyValues(obj.actual),
-                            (expected, actual) => new { expected, actual })
-                        .ForEach(zip => AssertEquals(zip.expected, zip.actual));
+                    obj.actualEntity.GetType().GetPropertyValues(obj.actualEntity)
+                        .Zip(obj.actualEntity.GetType().GetPropertyValues(obj.actualEntity),
+                            (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
+                        .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
                 });
         }
 
