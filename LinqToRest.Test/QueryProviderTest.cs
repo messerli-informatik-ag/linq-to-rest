@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
+using Messerli.Utility.Extension;
 using NSubstitute;
 using Xunit;
 
@@ -20,6 +22,26 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expectedRestQuery, restQuery);
         }
 
+
+        [Fact]
+        public void ReturnsRestObject()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var queryResult = query.ToArray();
+
+            // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
+            // which executes queries :(
+            expectedQueryObject
+                .Zip(queryResult, (expected, actual) => new { expected, actual })
+                .ForEach(obj =>
+                {
+                    obj.expected.GetType().GetPropertyValues(obj.expected)
+                        .Zip(obj.actual.GetType().GetPropertyValues(obj.actual),
+                            (expected, actual) => new { expected, actual })
+                        .ForEach(zip => AssertEquals(zip.expected, zip.actual));
+                });
+        }
+
         private static Query<T> CreateQuery<T>()
         {
             var serviceUri = MockServiceUri();
@@ -30,6 +52,11 @@ namespace Messerli.LinqToRest.Test
             return new Query<T>(queryProvider);
         }
 
+        private static void AssertEquals(object expected, object actual)
+        {
+            var isEqual = expected.Equals(actual);
+            Assert.True(isEqual);
+        }
 
         private static Uri MockServiceUri()
         {
