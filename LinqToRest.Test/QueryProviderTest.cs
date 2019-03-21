@@ -76,11 +76,6 @@ namespace Messerli.LinqToRest.Test
                 MockServiceUri());
         }
 
-        private static Uri GetUri(string uri)
-        {
-            return new UriBuilder(uri).Uri;
-        }
-
         private static Query<T> CreateQuery<T>()
         {
             var serviceUri = MockServiceUri();
@@ -116,13 +111,6 @@ namespace Messerli.LinqToRest.Test
             resourceRetriever.RetrieveResource<IEnumerable<EntityWithQueryableMember>>(uri).Returns(result);
 
             return resourceRetriever;
-        }
-
-        private static IObjectResolver MockObjectResolver()
-        {
-            var queryableFactory = new QueryableFactory(MockQueryProvider());
-
-            return new QueryableObjectResolver(queryableFactory);
         }
 
         private static QueryProvider MockQueryProvider()
