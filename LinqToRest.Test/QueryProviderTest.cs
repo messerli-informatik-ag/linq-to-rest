@@ -55,17 +55,28 @@ namespace Messerli.LinqToRest.Test
                 new EntityWithQueryableMember("Foo", subQuery)
             };
 
+            Assert.Equal(expectedQueryObject.Length, queryResult.Length);
+
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
             // which executes queries :(
             expectedQueryObject
                 .Zip(queryResult, (expectedEntity, actualEntity) => new { expectedEntity, actualEntity })
                 .ForEach(obj =>
                 {
-                    obj.actualEntity.GetType().GetPropertyValues(obj.actualEntity)
-                        .Zip(obj.actualEntity.GetType().GetPropertyValues(obj.actualEntity),
+                    var expectedPropertyValues = GetPropertyValues(obj.expectedEntity).ToArray();
+                    var actualPropertyValues = GetPropertyValues(obj.actualEntity).ToArray();
+
+                    Assert.Equal(expectedPropertyValues.Length, actualPropertyValues.Length);
+
+                    expectedPropertyValues.Zip(actualPropertyValues,
                             (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
                         .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
                 });
+        }
+
+        private static IEnumerable<object> GetPropertyValues(object @object)
+        {
+            return @object.GetType().GetPropertyValues(@object);
         }
 
         private static QueryProvider MockQueryProviderFactory()
