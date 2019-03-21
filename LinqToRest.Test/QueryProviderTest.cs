@@ -20,7 +20,7 @@ namespace Messerli.LinqToRest.Test
             var queryBinderFactory = ResolveQueryBinderFactory();
 
 
-            var queryProvider = new QueryProvider(resourceRetriever, objectResolver, queryBinderFactory, serviceUri);
+            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, serviceUri);
             var query = new Query<ClassWithQueryableMember>(queryProvider);
 
             var restQuery = query.ToString();
@@ -57,11 +57,10 @@ namespace Messerli.LinqToRest.Test
             return new QueryableObjectResolver(queryableFactory);
         }
 
-        private static QueryProviderFactory ResolveQueryProviderFactory()
+        private static QueryProvider ResolveQueryProviderFactory()
         {
-            return new QueryProviderFactory(
+            return new QueryProvider(
                 ResolveResourceRetriever(),
-                new DefaultObjectResolver(),
                 ResolveQueryBinderFactory(),
                 ResolveServiceUri());
         }
