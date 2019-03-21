@@ -29,6 +29,11 @@ namespace Messerli.LinqToRest.Test
             var query = CreateQuery<EntityWithQueryableMember>();
             var queryResult = query.ToArray();
 
+            var expectedQueryObject = new[]
+            {
+                new EntityWithQueryableMember("Foo", null)
+            };
+
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
             // which executes queries :(
             expectedQueryObject
