@@ -22,6 +22,24 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expectedRestQuery, restQuery);
         }
 
+        [Fact]
+        public void ReturnsRestQueryWithSelect()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var restQuery = query.Select(entity => new { entity.Name }).ToString();
+            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers?filter=uniqueIdentifier,name";
+
+            Assert.Equal(expectedRestQuery, restQuery);
+        }
+        [Fact]
+        public void ReturnsRestQueryWithSelectedUniqueIdentifier()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var restQuery = query.Select(entity => new { entity.UniqueIdentifier, entity.Name }).ToString();
+            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers?filter=uniqueIdentifier,name";
+
+            Assert.Equal(expectedRestQuery, restQuery);
+        }
 
         [Fact]
         public void ReturnsRestObject()
