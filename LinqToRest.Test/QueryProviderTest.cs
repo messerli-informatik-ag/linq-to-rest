@@ -48,9 +48,11 @@ namespace Messerli.LinqToRest.Test
             var query = CreateQuery<EntityWithQueryableMember>();
             var queryResult = query.ToArray();
 
+            var subQuery =
+                new Query<EntityWithSimpleMembers>(MockQueryProvider());
             var expectedQueryObject = new[]
             {
-                new EntityWithQueryableMember("Foo", null)
+                new EntityWithQueryableMember("Foo", subQuery)
             };
 
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
@@ -64,6 +66,19 @@ namespace Messerli.LinqToRest.Test
                             (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
                         .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
                 });
+        }
+
+        private static QueryProvider MockQueryProviderFactory()
+        {
+            return new QueryProvider(
+                MockResourceRetriever(),
+                MockQueryBinderFactory(),
+                MockServiceUri());
+        }
+
+        private static Uri GetUri(string uri)
+        {
+            return new UriBuilder(uri).Uri;
         }
 
         private static Query<T> CreateQuery<T>()
