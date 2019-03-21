@@ -24,7 +24,8 @@ namespace Messerli.LinqToRest.Test
 
             var restQuery = query.ToString();
 
-            Assert.Equal($"{serviceUri.AbsoluteUri}classwithqueryablemembers", restQuery);
+            var expectedRestQuery = $"{serviceUri.AbsoluteUri}entitywithqueryablemembers";
+            Assert.Equal(expectedRestQuery, restQuery);
         }
 
         private static Uri MockServiceUri()
