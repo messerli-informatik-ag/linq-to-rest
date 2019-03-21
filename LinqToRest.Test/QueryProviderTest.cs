@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
@@ -16,6 +17,16 @@ namespace Messerli.LinqToRest.Test
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.ToString();
             var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers";
+
+            Assert.Equal(expectedRestQuery, restQuery);
+        }
+
+        [Fact]
+        public void ReturnsRestWithWhere()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var restQuery = query.Where(entity => entity.Name == "Foo").ToString();
+            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers?name=Foo";
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
