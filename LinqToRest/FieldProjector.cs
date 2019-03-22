@@ -1,6 +1,6 @@
 ﻿using Messerli.LinqToRest.Declarations;
-using Messerli.LinqToRest.Expressions;
 using Messerli.LinqToRest.Entities;
+using Messerli.LinqToRest.Expressions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
