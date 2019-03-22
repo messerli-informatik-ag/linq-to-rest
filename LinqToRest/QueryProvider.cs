@@ -11,12 +11,14 @@ namespace Messerli.LinqToRest
     public class QueryProvider : Messerli.QueryProvider.QueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
+        private readonly IObjectResolver _objectResolver;
         private readonly QueryBinderFactory _queryBinderFactory;
         private readonly Uri _root;
 
-        public QueryProvider(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory, Uri root)
+        public QueryProvider(IResourceRetriever resourceRetriever, IObjectResolver objectResolver, QueryBinderFactory queryBinderFactory, Uri root)
         {
             _resourceRetriever = resourceRetriever;
+            _objectResolver = objectResolver;
             _queryBinderFactory = queryBinderFactory;
             _root = root;
         }
@@ -32,9 +34,8 @@ namespace Messerli.LinqToRest
             var uri = new Uri(result.CommandText);
             var elementType = TypeSystem.GetElementType(expression.Type);
 
-            return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever, uri);
+            return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever, _objectResolver, uri);
         }
-
 
         private TranslateResult Translate(Expression expression)
         {

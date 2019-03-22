@@ -9,9 +9,16 @@ namespace Messerli.LinqToRest
     {
         private readonly IEnumerator<T> _enumerator;
 
-        public ProjectionReader(IResourceRetriever resourceRetriever, Uri uri)
+        public ProjectionReader(IResourceRetriever resourceRetriever, IObjectResolver objectResolver, Uri uri)
         {
-            _enumerator = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result.GetEnumerator();
+            var deserializedResource = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result;
+
+            var parent = new ObjectToResolve(typeof(Uri), uri, null);
+            var objectToResolve = new ObjectToResolve(typeof(IEnumerable<T>), deserializedResource, parent);
+
+            var resolvedResource = (IEnumerable<T>)objectResolver.Resolve(objectToResolve);
+
+            _enumerator = resolvedResource.GetEnumerator();
         }
 
         public IEnumerator<T> GetEnumerator()
