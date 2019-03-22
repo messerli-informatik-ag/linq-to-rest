@@ -1,12 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
 using NSubstitute;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using Xunit;
+using RestQueryProvider = Messerli.LinqToRest.QueryProvider;
 
 namespace Messerli.LinqToRest.Test
 {
@@ -17,7 +19,7 @@ namespace Messerli.LinqToRest.Test
         {
             var query = CreateQuery<EntityWithQueryableMember>();
             var restQuery = query.ToString();
-            var expectedRestQuery = $"{MockServiceUri().AbsoluteUri}entitywithqueryablemembers";
+            var expectedRestQuery = EntityWithQueryableMemberRequest.AbsoluteUri;
 
             Assert.Equal(expectedRestQuery, restQuery);
         }
@@ -29,8 +31,11 @@ namespace Messerli.LinqToRest.Test
             var query = CreateQuery<EntityWithQueryableMember>();
             var queryResult = query.ToArray();
 
+            var expectedQueryObject = EntityWithQueryableMemberResult;
+
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
             // which executes queries :(
+            Assert.Equal(expectedQueryObject.Length, queryResult.Length);
             expectedQueryObject
                 .Zip(queryResult, (expected, actual) => new { expected, actual })
                 .ForEach(obj =>
@@ -42,15 +47,7 @@ namespace Messerli.LinqToRest.Test
                 });
         }
 
-        private static Query<T> CreateQuery<T>()
-        {
-            var serviceUri = MockServiceUri();
-            var resourceRetriever = MockResourceRetriever();
-            var queryBinderFactory = MockQueryBinderFactory();
-            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, serviceUri);
-
-            return new Query<T>(queryProvider);
-        }
+        #region Helper
 
         private static void AssertEquals(object expected, object actual)
         {
@@ -58,38 +55,56 @@ namespace Messerli.LinqToRest.Test
             Assert.True(isEqual);
         }
 
+        private static Query<T> CreateQuery<T>()
+        {
+            var serviceUri = MockServiceUri();
+            var resourceRetriever = MockResourceRetriever();
+            var objectResolver = MockObjectResolver();
+            var queryBinderFactory = MockQueryBinderFactory();
+
+            var queryProvider = new RestQueryProvider(resourceRetriever, objectResolver, queryBinderFactory, serviceUri);
+
+            return new Query<T>(queryProvider);
+        }
+
+        #endregion
+
+        #region Mock
+
         private static Uri MockServiceUri()
         {
-            const string root = "http://www.exapmle.com/api/v1/";
-            return new UriBuilder(root).Uri;
+            return RootUri;
         }
 
         private static IResourceRetriever MockResourceRetriever()
         {
-            var resourceRetriever = Substitute.For<IResourceRetriever>();
+            var retriever = Substitute.For<IResourceRetriever>();
 
-            var uri = new Uri(MockServiceUri(), "test");
-            var result = new[]
-            {
-                new EntityWithQueryableMember("Test1", null),
-                new EntityWithQueryableMember("Test2", null)
-            };
-            resourceRetriever.RetrieveResource<IEnumerable<EntityWithQueryableMember>>(uri).Returns(result);
+            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(retriever, EntityWithQueryableMemberRequest, ResourceRetrieverEntityWithQueryableMemberResult);
+
+            return retriever;
+        }
+
+        private static IResourceRetriever AddUriMock<T>(IResourceRetriever resourceRetriever, Uri uri, object value)
+        {
+            resourceRetriever.RetrieveResource<T>(uri).Returns(Task.FromResult((T)value));
 
             return resourceRetriever;
         }
 
         private static IObjectResolver MockObjectResolver()
         {
-            var queryableFactory = new QueryableFactory(MockQueryProvider());
+            var queryableFactory = new QueryableFactory(MockQueryProviderFactory());
 
             return new QueryableObjectResolver(queryableFactory);
         }
 
-        private static QueryProvider MockQueryProvider()
+        private static QueryProviderFactory MockQueryProviderFactory()
         {
-            return new QueryProvider(
+            return new QueryProviderFactory(
                 MockResourceRetriever(),
+                // Todo: resolve circular dependency!
+                new DefaultObjectResolver(),
                 MockQueryBinderFactory(),
                 MockServiceUri());
         }
@@ -101,5 +116,31 @@ namespace Messerli.LinqToRest.Test
 
             return queryBinderFactory;
         }
+
+        #endregion
+
+        #region Data
+
+        private static Uri RootUri => new Uri("http://www.exapmle.com/api/v1/", UriKind.Absolute);
+
+        private static Uri EntityWithQueryableMemberRequest => new Uri(RootUri, "entitywithqueryablemembers");
+
+        private static Uri EntityWithQueryableMemberTest1Root => new Uri(RootUri, "entitywithqueryablemembers/Test1/");
+
+        private static Uri EntityWithQueryableMemberTest2Root => new Uri(RootUri, "entitywithqueryablemembers/Test2/");
+
+        private static object ResourceRetrieverEntityWithQueryableMemberResult => new[]
+        {
+            new EntityWithQueryableMember("Test1", null),
+            new EntityWithQueryableMember("Test2", null)
+        };
+
+        private static EntityWithQueryableMember[] EntityWithQueryableMemberResult => new[]
+        {
+            new EntityWithQueryableMember("Test1", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest1Root))),
+            new EntityWithQueryableMember("Test2", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest2Root)))
+        };
+
+        #endregion
     }
 }
