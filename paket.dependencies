@@ -5,6 +5,7 @@ source https://www.nuget.org/api/v2
 nuget Messerli.Utility ~> 0.1
 nuget Messerli.ServerCommunication ~> 0.1
 nuget Messerli.QueryProvider ~> 0.1
+nuget NSubstitute ~> 3.1
 nuget JetBrains.Annotations ~> 2018.2
 nuget Soltys.ChangeCase ~> 1.6
 nuget NSubstitute ~> 4.0
