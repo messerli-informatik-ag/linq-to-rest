@@ -24,6 +24,25 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expectedRestQuery, restQuery);
         }
 
+        [Fact]
+        public void ReturnsRestQueryWithSelect()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var restQuery = query.Select(entity => new { entity.Name }).ToString();
+            var expectedRestQuery = new Uri(EntityWithQueryableMemberRequest, "?fields=uniqueIdentifier,name").ToString();
+
+            Assert.Equal(expectedRestQuery, restQuery);
+        }
+
+        [Fact]
+        public void ReturnsRestQueryWithSelectedUniqueIdentifier()
+        {
+            var query = CreateQuery<EntityWithQueryableMember>();
+            var restQuery = query.Select(entity => new { entity.UniqueIdentifier, entity.Name }).ToString();
+            var expectedRestQuery = new Uri(EntityWithQueryableMemberRequest, "?fields=uniqueIdentifier,name").ToString();
+
+            Assert.Equal(expectedRestQuery, restQuery);
+        }
 
         [Fact]
         public void ReturnsRestObject()
@@ -33,21 +52,31 @@ namespace Messerli.LinqToRest.Test
 
             var expectedQueryObject = EntityWithQueryableMemberResult;
 
+            Assert.Equal(expectedQueryObject.Length, queryResult.Length);
+
             // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
             // which executes queries :(
-            Assert.Equal(expectedQueryObject.Length, queryResult.Length);
             expectedQueryObject
-                .Zip(queryResult, (expected, actual) => new { expected, actual })
-                .ForEach(obj =>
-                {
-                    obj.expected.GetType().GetPropertyValues(obj.expected)
-                        .Zip(obj.actual.GetType().GetPropertyValues(obj.actual),
-                            (expected, actual) => new { expected, actual })
-                        .ForEach(zip => AssertEquals(zip.expected, zip.actual));
-                });
+                .Zip(queryResult, (expectedEntity, actualEntity) => new { expectedEntity, actualEntity })
+                    .ForEach(obj =>
+                    {
+                        var expectedPropertyValues = GetPropertyValues(obj.expectedEntity).ToArray();
+                        var actualPropertyValues = GetPropertyValues(obj.actualEntity).ToArray();
+
+                        Assert.Equal(expectedPropertyValues.Length, actualPropertyValues.Length);
+
+                        expectedPropertyValues
+                            .Zip(actualPropertyValues, (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
+                            .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
+                    });
         }
 
         #region Helper
+
+        private static IEnumerable<object> GetPropertyValues(object @object)
+        {
+            return @object.GetType().GetPropertyValues(@object);
+        }
 
         private static void AssertEquals(object expected, object actual)
         {
@@ -80,7 +109,9 @@ namespace Messerli.LinqToRest.Test
         {
             var retriever = Substitute.For<IResourceRetriever>();
 
-            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(retriever, EntityWithQueryableMemberRequest, ResourceRetrieverEntityWithQueryableMemberResult);
+            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(retriever,
+                EntityWithQueryableMemberRequest,
+                ResourceRetrieverEntityWithQueryableMemberResult);
 
             return retriever;
         }

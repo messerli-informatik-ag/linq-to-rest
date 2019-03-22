@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
+using Soltys.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -36,11 +37,11 @@ namespace Messerli.LinqToRest
 
         private void AddUniqueIdentifier()
         {
-            const string name = nameof(IEntity.UniqueIdentifier);
+            var name = nameof(IEntity.UniqueIdentifier).CamelCase();
             var fieldExpression = new FieldExpression(typeof(string), name, new FieldDeclaration[0]);
             var fieldDeclaration = new FieldDeclaration(name, fieldExpression);
 
-            _fields.Add(fieldDeclaration);
+            _fields.Insert(0, fieldDeclaration);
         }
 
         public override Expression Visit(Expression expression)
