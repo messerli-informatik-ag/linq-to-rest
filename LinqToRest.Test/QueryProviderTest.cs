@@ -110,9 +110,15 @@ namespace Messerli.LinqToRest.Test
         {
             var retriever = Substitute.For<IResourceRetriever>();
 
-            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(retriever,
+            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(
+                retriever,
                 EntityWithQueryableMemberRequestUri,
                 EntityWithQueryableMemberDeserialized);
+
+            retriever = AddUriMock<IEnumerable<object>>(
+                retriever,
+                UniqueIdentifyerNameRequestUri,
+                UniqueIdentifyerNameDeserialized);
 
             return retriever;
         }
@@ -155,13 +161,13 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri RootUri => new Uri("http://www.exapmle.com/api/v1/", UriKind.Absolute);
 
+        private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
+
         private static object EntityWithQueryableMemberDeserialized => new[]
         {
             new EntityWithQueryableMember("Test1", null),
             new EntityWithQueryableMember("Test2", null)
         };
-
-        private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
 
         private static QueryResult<object> EntityWithQueryableMemberResult => new QueryResult<object>(
             EntityWithQueryableMemberRequestUri,
@@ -178,6 +184,12 @@ namespace Messerli.LinqToRest.Test
             });
 
         private static Uri UniqueIdentifyerNameRequestUri => new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
+
+        private static object UniqueIdentifyerNameDeserialized => new[]
+        {
+            new { UniqueIdentifier = "Test1", Name = "Test1" },
+            new { UniqueIdentifier = "Test2", Name = "Test2" },
+        };
 
         private static QueryResult<object> UniqueIdentifyerNameResult => new QueryResult<object>(
             UniqueIdentifyerNameRequestUri,
