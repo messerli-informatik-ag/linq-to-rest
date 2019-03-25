@@ -34,14 +34,18 @@ namespace Messerli.LinqToRest
             var fields = VisitFieldDeclarations(e.Fields);
             var filter = Visit(e.Filter);
 
-            return fields == e.Fields && filter == e.Filter ? e : new ResourceExpression(e.Type, e.Name, fields, filter);
+            return Equals(fields, e.Fields) && filter == e.Filter
+                ? e
+                : new ResourceExpression(e.Type, e.Name, fields, filter);
         }
 
         protected virtual Expression VisitField(FieldExpression field)
         {
             var properties = VisitFieldDeclarations(field.Properties);
 
-            return properties == field.Properties ? field : new FieldExpression(field.Type, field.Name, properties);
+            return properties.Equals(field.Properties)
+                ? field
+                : new FieldExpression(field.Type, field.Name, properties);
         }
 
         protected virtual Expression VisitProjection(ProjectionExpression projection)
@@ -49,12 +53,13 @@ namespace Messerli.LinqToRest
             var projector = Visit(projection.Projector);
             var source = Visit(projection.Source);
 
-            return projector == projection.Projector && source == projection.Source ?
-                projection :
-                new ProjectionExpression(source, projector);
+            return projector == projection.Projector && source == projection.Source
+                ? projection
+                : new ProjectionExpression(source, projector);
         }
 
-        private IReadOnlyCollection<FieldDeclaration> VisitFieldDeclarations(IReadOnlyCollection<FieldDeclaration> fields)
+        private IReadOnlyCollection<FieldDeclaration> VisitFieldDeclarations(
+            IReadOnlyCollection<FieldDeclaration> fields)
         {
             // Todo: where is alternate used?!?
             List<FieldDeclaration> alternate = null;
@@ -65,8 +70,10 @@ namespace Messerli.LinqToRest
                 {
                     alternate = fields.Take(index).ToList();
                 }
+
                 alternate?.Add(new FieldDeclaration(field.Name, e));
             }
+
             return alternate?.AsReadOnly() ?? fields;
         }
     }
