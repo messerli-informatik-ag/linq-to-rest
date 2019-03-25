@@ -27,16 +27,18 @@ namespace Messerli.LinqToRest
             _candidates = _nominator.Nominate(expression);
 
             var visitedExpression = Visit(expression);
-            if (_fields.Any())
-            {
-                AddUniqueIdentifier();
-            }
+            AddUniqueIdentifier();
 
             return new ProjectedFields(visitedExpression, _fields.AsReadOnly());
         }
 
         private void AddUniqueIdentifier()
         {
+            if (!_fields.Any() || _fields.Any(field => field.Name == nameof(IEntity.UniqueIdentifier)))
+            {
+                return;
+            }
+
             var name = nameof(IEntity.UniqueIdentifier).CamelCase();
             var fieldExpression = new FieldExpression(typeof(string), name, new FieldDeclaration[0]);
             var fieldDeclaration = new FieldDeclaration(name, fieldExpression);
