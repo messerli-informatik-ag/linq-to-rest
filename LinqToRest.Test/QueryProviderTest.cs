@@ -16,31 +16,36 @@ namespace Messerli.LinqToRest.Test
         [Fact]
         public void ReturnsRestQuery()
         {
-            var query = CreateQuery<EntityWithQueryableMember>();
-            var restQuery = query.ToString();
-            var expectedRestQuery = EntityWithQueryableMemberRequest.AbsoluteUri;
+            var actual = CreateQuery<EntityWithQueryableMember>()
+                .ToString();
 
-            Assert.Equal(expectedRestQuery, restQuery);
+            var expected = EntityWithQueryableMemberResult;
+
+            Assert.Equal(actual, expected.Query);
         }
 
         [Fact]
         public void ReturnsRestQueryWithSelect()
         {
-            var query = CreateQuery<EntityWithQueryableMember>();
-            var restQuery = query.Select(entity => new { entity.Name }).ToString();
-            var expectedRestQuery = new Uri(EntityWithQueryableMemberRequest, "?fields=uniqueIdentifier,name").ToString();
+            var actual = CreateQuery<EntityWithQueryableMember>()
+                .Select(entity => new { entity.Name })
+                .ToString();
 
-            Assert.Equal(expectedRestQuery, restQuery);
+            var expected = UniqueIdentifyerNameResult;
+
+            Assert.Equal(actual, expected.Query);
         }
 
         [Fact]
         public void ReturnsRestQueryWithSelectedUniqueIdentifier()
         {
-            var query = CreateQuery<EntityWithQueryableMember>();
-            var restQuery = query.Select(entity => new { entity.UniqueIdentifier, entity.Name }).ToString();
-            var expectedRestQuery = new Uri(EntityWithQueryableMemberRequest, "?fields=uniqueIdentifier,name").ToString();
+            var actual = CreateQuery<EntityWithQueryableMember>()
+                .Select(entity => new { entity.UniqueIdentifier, entity.Name })
+                .ToString();
 
-            Assert.Equal(expectedRestQuery, restQuery);
+            var expected = UniqueIdentifyerNameResult;
+
+            Assert.Equal(actual, expected.Query);
         }
 
         [Fact]
@@ -49,11 +54,33 @@ namespace Messerli.LinqToRest.Test
             var actual = new QueryResult<object>(
                 CreateQuery<EntityWithQueryableMember>());
 
-            var expected = new QueryResult<object>(
-                EntityWithQueryableMemberRequest,
-                EntityWithQueryableMemberResult);
+            var expected = EntityWithQueryableMemberResult;
 
             Assert.Equal(expected, actual);
+        }
+
+        [Fact]
+        public void ReturnsRestObjectWithSelect()
+        {
+            var actual = new QueryResult<object>(
+                CreateQuery<EntityWithQueryableMember>()
+                    .Select(entity => new { entity.Name }));
+
+            var expected = UniqueIdentifyerNameResult;
+
+            Assert.Equal(actual, expected);
+        }
+
+        [Fact]
+        public void ReturnsRestObjectWithSelectedUniqueIdentifier()
+        {
+            var actual = new QueryResult<object>(
+                CreateQuery<EntityWithQueryableMember>()
+                    .Select(entity => new { entity.UniqueIdentifier, entity.Name }));
+
+            var expected = UniqueIdentifyerNameResult;
+
+            Assert.Equal(actual, expected);
         }
 
         #region Helper
@@ -84,8 +111,8 @@ namespace Messerli.LinqToRest.Test
             var retriever = Substitute.For<IResourceRetriever>();
 
             retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(retriever,
-                EntityWithQueryableMemberRequest,
-                ResourceRetrieverEntityWithQueryableMemberResult);
+                EntityWithQueryableMemberRequestUri,
+                EntityWithQueryableMemberDeserialized);
 
             return retriever;
         }
@@ -128,23 +155,45 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri RootUri => new Uri("http://www.exapmle.com/api/v1/", UriKind.Absolute);
 
-        private static Uri EntityWithQueryableMemberRequest => new Uri(RootUri, "entitywithqueryablemembers");
-
-        private static Uri EntityWithQueryableMemberTest1Root => new Uri(RootUri, "entitywithqueryablemembers/Test1/");
-
-        private static Uri EntityWithQueryableMemberTest2Root => new Uri(RootUri, "entitywithqueryablemembers/Test2/");
-
-        private static object ResourceRetrieverEntityWithQueryableMemberResult => new[]
+        private static object EntityWithQueryableMemberDeserialized => new[]
         {
             new EntityWithQueryableMember("Test1", null),
             new EntityWithQueryableMember("Test2", null)
         };
 
-        private static object[] EntityWithQueryableMemberResult => new object[]
-        {
-            new EntityWithQueryableMember("Test1", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest1Root))),
-            new EntityWithQueryableMember("Test2", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest2Root)))
-        };
+        private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
+
+        private static QueryResult<object> EntityWithQueryableMemberResult => new QueryResult<object>(
+            EntityWithQueryableMemberRequestUri,
+            new object[]
+            {
+                new EntityWithQueryableMember(
+                    "Test1",
+                    new Query<EntityWithSimpleMembers>(
+                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
+                new EntityWithQueryableMember(
+                    "Test2",
+                    new Query<EntityWithSimpleMembers>(
+                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
+            });
+
+        private static Uri UniqueIdentifyerNameRequestUri => new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
+
+        private static QueryResult<object> UniqueIdentifyerNameResult => new QueryResult<object>(
+            UniqueIdentifyerNameRequestUri,
+            new object[]
+            {
+                new
+                {
+                    UniqueIdentifier = "Test1",
+                    Name = "Test1"
+                },
+                new
+                {
+                    UniqueIdentifier = "Test2",
+                    Name = "Test2"
+                }
+            });
 
         #endregion
     }
