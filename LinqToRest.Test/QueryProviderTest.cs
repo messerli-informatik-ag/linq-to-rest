@@ -1,7 +1,6 @@
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
-using Messerli.Utility.Extension;
 using NSubstitute;
 using System;
 using System.Collections.Generic;
@@ -47,42 +46,17 @@ namespace Messerli.LinqToRest.Test
         [Fact]
         public void ReturnsRestObject()
         {
-            var query = CreateQuery<EntityWithQueryableMember>();
-            var queryResult = query.ToArray();
+            var actual = new QueryResult<object>(
+                CreateQuery<EntityWithQueryableMember>());
 
-            var expectedQueryObject = EntityWithQueryableMemberResult;
+            var expected = new QueryResult<object>(
+                EntityWithQueryableMemberRequest,
+                EntityWithQueryableMemberResult);
 
-            Assert.Equal(expectedQueryObject.Length, queryResult.Length);
-
-            // Assert.Equals() calls Query<T>.GetEnumerable().Equals() and not Query<T>.Equals()
-            // which executes queries :(
-            expectedQueryObject
-                .Zip(queryResult, (expectedEntity, actualEntity) => new { expectedEntity, actualEntity })
-                    .ForEach(obj =>
-                    {
-                        var expectedPropertyValues = GetPropertyValues(obj.expectedEntity).ToArray();
-                        var actualPropertyValues = GetPropertyValues(obj.actualEntity).ToArray();
-
-                        Assert.Equal(expectedPropertyValues.Length, actualPropertyValues.Length);
-
-                        expectedPropertyValues
-                            .Zip(actualPropertyValues, (expectedProperty, actualProperty) => new { expectedProperty, actualProperty })
-                            .ForEach(zip => AssertEquals(zip.expectedProperty, zip.actualProperty));
-                    });
+            Assert.Equal(expected, actual);
         }
 
         #region Helper
-
-        private static IEnumerable<object> GetPropertyValues(object @object)
-        {
-            return @object.GetType().GetPropertyValues(@object);
-        }
-
-        private static void AssertEquals(object expected, object actual)
-        {
-            var isEqual = expected.Equals(actual);
-            Assert.True(isEqual);
-        }
 
         private static Query<T> CreateQuery<T>()
         {
@@ -166,7 +140,7 @@ namespace Messerli.LinqToRest.Test
             new EntityWithQueryableMember("Test2", null)
         };
 
-        private static EntityWithQueryableMember[] EntityWithQueryableMemberResult => new[]
+        private static object[] EntityWithQueryableMemberResult => new object[]
         {
             new EntityWithQueryableMember("Test1", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest1Root))),
             new EntityWithQueryableMember("Test2", new Query<EntityWithSimpleMembers>(MockQueryProviderFactory().Create(EntityWithQueryableMemberTest2Root)))
