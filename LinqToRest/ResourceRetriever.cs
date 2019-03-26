@@ -24,23 +24,23 @@ namespace Messerli.LinqToRest
             _queryableFactory = queryableFactory;
         }
 
-        public async Task<T> RetrieveResource<T>(Uri uri)
+        public T RetrieveResource<T>(Uri uri)
         {
-            var content = await GetContent(uri);
+            var content = GetContent(uri).Result;
 
             return typeof(T).IsEnumerable()
                 ? DeserializeArray<T>(content)
                 : DeserializeObject<T>(content);
         }
 
-        public Task<object> RetrieveResource(Type type, Uri uri)
+        public object RetrieveResource(Type type, Uri uri)
         {
             var method = typeof(ResourceRetriever)
                 .GetMethods()
                 .First(m => m.Name == nameof(RetrieveResource))
                 .MakeGenericMethod(type);
 
-            return (Task<object>)method.Invoke(this, new object[] { uri });
+            return method.Invoke(this, new object[] { uri });
         }
 
         private T DeserializeObject<T>(string content)
