@@ -39,7 +39,7 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(UniqueIdentifierNameResult.Query, UriKind.Absolute);
-            var type = typeof(IEnumerable<>).MakeGenericType(new { UniqueIdentifyer = string.Empty, Name = string.Empty }.GetType());
+            var type = typeof(IEnumerable<>).MakeGenericType(new { UniqueIdentifier = string.Empty, Name = string.Empty }.GetType());
             var actual = resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(UniqueIdentifierNameResult.Object, actual);
