@@ -1,7 +1,7 @@
-﻿using Messerli.ServerCommunication;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using Messerli.ServerCommunication;
 
 namespace Messerli.LinqToRest
 {
@@ -11,16 +11,7 @@ namespace Messerli.LinqToRest
 
         public ProjectionReader(IResourceRetriever resourceRetriever, IObjectResolver objectResolver, Uri uri)
         {
-            var deserializedResource = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result;
-
-            var parent = new ObjectToResolve(typeof(Uri), uri, null);
-            var objectToResolve = new ObjectToResolve(typeof(IEnumerable<T>), deserializedResource, parent);
-
-            var resolvedResource = (IEnumerable<T>)objectResolver.Resolve(objectToResolve);
-
-            // Todo: throw on null!
-
-            _enumerator = resolvedResource.GetEnumerator();
+            _enumerator = resourceRetriever.RetrieveResource<IEnumerator<T>>(uri).Result;
         }
 
         public IEnumerator<T> GetEnumerator()

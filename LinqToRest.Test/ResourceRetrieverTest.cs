@@ -1,10 +1,9 @@
-﻿using Messerli.LinqToRest.Test.Stub;
-using Messerli.QueryProvider;
-using Messerli.ServerCommunication;
-using NSubstitute;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net.Http;
+using Messerli.LinqToRest.Test.Stub;
+using Messerli.QueryProvider;
+using NSubstitute;
 using Xunit;
 
 namespace Messerli.LinqToRest.Test
@@ -48,15 +47,11 @@ namespace Messerli.LinqToRest.Test
 
         private static ResourceRetriever CreateResourceRetriever()
         {
-            return new ResourceRetriever();
+            return new ResourceRetriever(MockHttpClient(), Substitute.For<IQueryableFactory>());
         }
 
         #region Mock
 
-        private static Uri MockServiceUri()
-        {
-            return RootUri;
-        }
 
         private static HttpClient MockHttpClient()
         {
@@ -66,21 +61,6 @@ namespace Messerli.LinqToRest.Test
                 .ToHttpClient();
         }
 
-        private static IObjectResolver MockObjectResolver()
-        {
-            var queryableFactory = new QueryableFactory(MockQueryProviderFactory());
-
-            return new QueryableObjectResolver(queryableFactory);
-        }
-
-        private static QueryProviderFactory MockQueryProviderFactory()
-        {
-            return new QueryProviderFactory(
-                CreateResourceRetriever(),
-                new DefaultObjectResolver(),
-                MockQueryBinderFactory(),
-                MockServiceUri());
-        }
 
         private static QueryBinderFactory MockQueryBinderFactory()
         {
@@ -96,7 +76,8 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri RootUri => new Uri("http://www.example.com/api/v1/", UriKind.Absolute);
 
-        private static string EntityWithQueryableMemberRequestUri => "entitywithqueryablemembers";
+        private static string EntityWithQueryableMemberRequestUri =>
+            $"{RootUri}entitywithqueryablemembers";
 
         private static string EntityWithQueryableMemberJson => @"
 [
@@ -110,21 +91,26 @@ namespace Messerli.LinqToRest.Test
 ";
 
         private static QueryResult<object> EntityWithQueryableMemberResult => new QueryResult<object>(
-            new Uri(RootUri, EntityWithQueryableMemberRequestUri),
+            new Uri(EntityWithQueryableMemberRequestUri),
             new object[]
             {
                 new EntityWithQueryableMember(
                     "Test1",
-                    new Query<EntityWithSimpleMembers>(
-                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
+                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
+                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
                 new EntityWithQueryableMember(
                     "Test2",
-                    new Query<EntityWithSimpleMembers>(
-                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
+                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
+                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
             });
 
+        private static QueryProvider CreateQueryProvider()
+        {
+            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), RootUri);
+        }
+
         private static string UniqueIdentifierNameRequestUri =>
-            "entitywithqueryablemembers?fields=uniqueIdentifier,name";
+            $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name";
 
         private static string UniqueIdentifierNameJson => @"
 [
@@ -140,7 +126,7 @@ namespace Messerli.LinqToRest.Test
 ";
 
         private static QueryResult<object> UniqueIdentifierNameResult => new QueryResult<object>(
-            new Uri(RootUri, UniqueIdentifierNameRequestUri),
+            new Uri(UniqueIdentifierNameRequestUri),
             new object[]
             {
                 new

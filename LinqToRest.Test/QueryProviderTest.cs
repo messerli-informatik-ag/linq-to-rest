@@ -1,12 +1,11 @@
+using System;
+using System.Linq;
+using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
 using NSubstitute;
 using RichardSzalay.MockHttp;
-using System;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 using Xunit;
 using RestQueryProvider = Messerli.LinqToRest.QueryProvider;
 
@@ -121,25 +120,17 @@ namespace Messerli.LinqToRest.Test
 
         private static IResourceRetriever MockResourceRetriever()
         {
-            return new ResourceRetriever();
+            return new ResourceRetriever(MockHttpClient(), Substitute.For<IQueryableFactory>());
         }
+
 
         private static IObjectResolver MockObjectResolver()
         {
-            var queryableFactory = new QueryableFactory(MockQueryProviderFactory());
+            var queryableFactory = new QueryableFactory(Substitute.For<QueryProvider>());
 
             return new QueryableObjectResolver(queryableFactory);
         }
 
-        private static QueryProviderFactory MockQueryProviderFactory()
-        {
-            return new QueryProviderFactory(
-                MockResourceRetriever(),
-                // Todo: resolve circular dependency!
-                new DefaultObjectResolver(),
-                MockQueryBinderFactory(),
-                MockServiceUri());
-        }
 
         private static QueryBinderFactory MockQueryBinderFactory()
         {
@@ -174,12 +165,12 @@ namespace Messerli.LinqToRest.Test
             {
                 new EntityWithQueryableMember(
                     "Test1",
-                    new Query<EntityWithSimpleMembers>(
-                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
+                    new Query<EntityWithSimpleMembers>(Substitute.For<QueryProvider>())),
+                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
                 new EntityWithQueryableMember(
                     "Test2",
-                    new Query<EntityWithSimpleMembers>(
-                        MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
+                    new Query<EntityWithSimpleMembers>(Substitute.For<QueryProvider>()))
+                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
             });
 
         private static Uri UniqueIdentifierNameRequestUri =>
