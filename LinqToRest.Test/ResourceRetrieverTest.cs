@@ -11,36 +11,36 @@ namespace Messerli.LinqToRest.Test
     public class ResourceRetrieverTest
     {
         [Fact]
-        public void ReturnsRestObject()
+        public async void ReturnsRestObject()
         {
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(EntityWithQueryableMemberResult.Query, UriKind.Absolute);
-            var actual = resourceRetriever.RetrieveResource<IEnumerable<EntityWithQueryableMember>>(uri).Result;
+            var actual = await resourceRetriever.RetrieveResource<IEnumerable<EntityWithQueryableMember>>(uri);
 
             Assert.Equal(EntityWithQueryableMemberResult.Object, actual);
         }
 
         [Fact]
-        public void ReturnsRestObjectWithSelect()
+        public async void ReturnsRestObjectWithSelect()
         {
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(UniqueIdentifierNameResult.Query, UriKind.Absolute);
             var type = typeof(IEnumerable<>).MakeGenericType(new { Name = string.Empty }.GetType());
-            var actual = resourceRetriever.RetrieveResource(type, uri).Result;
+            var actual = await resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(UniqueIdentifierNameResult.Object, actual);
         }
 
         [Fact]
-        public void ReturnsRestObjectWithSelectedUniqueIdentifier()
+        public async void ReturnsRestObjectWithSelectedUniqueIdentifier()
         {
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(UniqueIdentifierNameResult.Query, UriKind.Absolute);
             var type = typeof(IEnumerable<>).MakeGenericType(new { UniqueIdentifyer = string.Empty, Name = string.Empty }.GetType());
-            var actual = resourceRetriever.RetrieveResource(type, uri).Result;
+            var actual = await resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(UniqueIdentifierNameResult.Object, actual);
         }
