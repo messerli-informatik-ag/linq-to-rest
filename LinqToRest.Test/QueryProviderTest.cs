@@ -121,7 +121,7 @@ namespace Messerli.LinqToRest.Test
 
         private static IResourceRetriever MockResourceRetriever()
         {
-            return new HttpResourceRetriever(MockHttpClient(), new JsonDeserializer(new EnumerableObjectCreator()));
+            return new ResourceRetriever();
         }
 
         private static IObjectResolver MockObjectResolver()
