@@ -126,7 +126,7 @@ namespace Messerli.LinqToRest.Test
 
         private static IObjectResolver MockObjectResolver()
         {
-            var queryableFactory = new QueryableFactory(Substitute.For<QueryProvider>());
+            var queryableFactory = new QueryableFactory(CreateQueryProvider());
 
             return new QueryableObjectResolver(queryableFactory);
         }
@@ -165,13 +165,31 @@ namespace Messerli.LinqToRest.Test
             {
                 new EntityWithQueryableMember(
                     "Test1",
-                    new Query<EntityWithSimpleMembers>(Substitute.For<QueryProvider>())),
+                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
                         //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
                 new EntityWithQueryableMember(
                     "Test2",
-                    new Query<EntityWithSimpleMembers>(Substitute.For<QueryProvider>()))
+                    new Query<EntityWithSimpleMembers>(CreateQueryProvider()))
                         //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
             });
+
+        private static QueryProvider CreateQueryProvider()
+        {
+            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), RootUri);
+        }
+
+        private static ResourceRetriever CreateResourceRetriever()
+        {
+            return new ResourceRetriever(
+                MockHttpClient(),
+                new QueryableFactory(
+                    new QueryProvider(
+                        Substitute.For<IResourceRetriever>(),
+                        null,
+                        () => new QueryBinder(new EntityValidator()),
+                        RootUri)));
+        }
+
 
         private static Uri UniqueIdentifierNameRequestUri =>
             new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
