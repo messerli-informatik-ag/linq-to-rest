@@ -66,7 +66,7 @@ namespace Messerli.LinqToRest.Test
                 CreateQuery<EntityWithQueryableMember>()
                     .Select(entity => new { entity.Name }));
 
-            var expected = UniqueIdentifierNameResult;
+            var expected = NameResult;
 
             Assert.Equal(expected, actual);
         }
@@ -224,7 +224,19 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2"
                 }
             });
-
+        private static QueryResult<object> NameResult => new QueryResult<object>(
+            UniqueIdentifierNameRequestUri,
+            new object[]
+            {
+                new
+                {
+                    Name = "Test1"
+                },
+                new
+                {
+                    Name = "Test2"
+                }
+            });
         #endregion
     }
 
