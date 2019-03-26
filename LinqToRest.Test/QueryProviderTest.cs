@@ -2,9 +2,10 @@ using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
 using NSubstitute;
+using RichardSzalay.MockHttp;
 using System;
-using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 using RestQueryProvider = Messerli.LinqToRest.QueryProvider;
@@ -31,7 +32,7 @@ namespace Messerli.LinqToRest.Test
                 .Select(entity => new { entity.Name })
                 .ToString();
 
-            var expected = UniqueIdentifyerNameResult;
+            var expected = UniqueIdentifierNameResult;
 
             Assert.Equal(actual, expected.Query);
         }
@@ -43,7 +44,7 @@ namespace Messerli.LinqToRest.Test
                 .Select(entity => new { entity.UniqueIdentifier, entity.Name })
                 .ToString();
 
-            var expected = UniqueIdentifyerNameResult;
+            var expected = UniqueIdentifierNameResult;
 
             Assert.Equal(actual, expected.Query);
         }
@@ -66,7 +67,7 @@ namespace Messerli.LinqToRest.Test
                 CreateQuery<EntityWithQueryableMember>()
                     .Select(entity => new { entity.Name }));
 
-            var expected = UniqueIdentifyerNameResult;
+            var expected = UniqueIdentifierNameResult;
 
             Assert.Equal(actual, expected);
         }
@@ -78,7 +79,7 @@ namespace Messerli.LinqToRest.Test
                 CreateQuery<EntityWithQueryableMember>()
                     .Select(entity => new { entity.UniqueIdentifier, entity.Name }));
 
-            var expected = UniqueIdentifyerNameResult;
+            var expected = UniqueIdentifierNameResult;
 
             Assert.Equal(actual, expected);
         }
@@ -92,7 +93,8 @@ namespace Messerli.LinqToRest.Test
             var objectResolver = MockObjectResolver();
             var queryBinderFactory = MockQueryBinderFactory();
 
-            var queryProvider = new RestQueryProvider(resourceRetriever, objectResolver, queryBinderFactory, serviceUri);
+            var queryProvider =
+                new RestQueryProvider(resourceRetriever, objectResolver, queryBinderFactory, serviceUri);
 
             return new Query<T>(queryProvider);
         }
@@ -106,26 +108,33 @@ namespace Messerli.LinqToRest.Test
             return RootUri;
         }
 
+        private static HttpClient MockHttpClient()
+        {
+            var mockHttp = new MockHttpMessageHandler();
+
+            mockHttp
+                .RegisterJsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
+                .RegisterJsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson);
+
+            return mockHttp.ToHttpClient();
+        }
+
         private static IResourceRetriever MockResourceRetriever()
         {
-            var retriever = Substitute.For<IResourceRetriever>();
-
-            retriever = AddUriMock<IEnumerable<EntityWithQueryableMember>>(
-                retriever,
-                EntityWithQueryableMemberRequestUri,
-                EntityWithQueryableMemberDeserialized);
-
-            retriever = AddUriMock<IEnumerable<object>>(
-                retriever,
-                UniqueIdentifyerNameRequestUri,
-                UniqueIdentifyerNameDeserialized);
-
-            return retriever;
+            return new HttpResourceRetriever(MockHttpClient(), new JsonDeserializer(new EnumerableObjectCreator()));
         }
 
         private static IResourceRetriever AddUriMock<T>(IResourceRetriever resourceRetriever, Uri uri, object value)
         {
             resourceRetriever.RetrieveResource<T>(uri).Returns(Task.FromResult((T)value));
+
+            return resourceRetriever;
+        }
+
+        private static IResourceRetriever AddUriMock(Type type, IResourceRetriever resourceRetriever, Uri uri,
+            object[] value)
+        {
+            resourceRetriever.RetrieveResource(type, uri).Returns(Task.FromResult(value));
 
             return resourceRetriever;
         }
@@ -163,11 +172,22 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
 
-        private static object EntityWithQueryableMemberDeserialized => new[]
+        private static object[] EntityWithQueryableMemberDeserialized => new[]
         {
             new EntityWithQueryableMember("Test1", null),
             new EntityWithQueryableMember("Test2", null)
         };
+
+        private static string EntityWithQueryableMemberJson => @"
+[
+    {
+        ""name"": ""Test1""
+    },
+    {
+        ""name"": ""Test2""
+    }
+]
+";
 
         private static QueryResult<object> EntityWithQueryableMemberResult => new QueryResult<object>(
             EntityWithQueryableMemberRequestUri,
@@ -183,16 +203,30 @@ namespace Messerli.LinqToRest.Test
                         MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
             });
 
-        private static Uri UniqueIdentifyerNameRequestUri => new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
+        private static Uri UniqueIdentifierNameRequestUri =>
+            new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
 
-        private static object UniqueIdentifyerNameDeserialized => new[]
+        private static object[] UniqueIdentifierNameDeserialized => new[]
         {
-            new { UniqueIdentifier = "Test1", Name = "Test1" },
-            new { UniqueIdentifier = "Test2", Name = "Test2" },
+            new {UniqueIdentifier = "Test1", Name = "Test1"},
+            new {UniqueIdentifier = "Test2", Name = "Test2"},
         };
 
-        private static QueryResult<object> UniqueIdentifyerNameResult => new QueryResult<object>(
-            UniqueIdentifyerNameRequestUri,
+        private static string UniqueIdentifierNameJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""Test1"",
+        ""name"": ""Test1""
+    },
+    {
+        ""uniqueIdentifier"": ""Test2"",
+        ""name"": ""Test2""
+    }
+]
+";
+
+        private static QueryResult<object> UniqueIdentifierNameResult => new QueryResult<object>(
+            UniqueIdentifierNameRequestUri,
             new object[]
             {
                 new
@@ -209,4 +243,17 @@ namespace Messerli.LinqToRest.Test
 
         #endregion
     }
+
+    internal static class Extension
+    {
+        public static MockHttpMessageHandler RegisterJsonResponse(
+            this MockHttpMessageHandler httpMessageHandler,
+            string route,
+            string jsonResponse)
+        {
+            httpMessageHandler.When(route).Respond("application/json", jsonResponse);
+            return httpMessageHandler;
+        }
+    }
+
 }
