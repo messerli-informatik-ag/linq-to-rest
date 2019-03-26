@@ -18,6 +18,8 @@ namespace Messerli.LinqToRest
 
             var resolvedResource = (IEnumerable<T>)objectResolver.Resolve(objectToResolve);
 
+            // Todo: throw on null!
+
             _enumerator = resolvedResource.GetEnumerator();
         }
 

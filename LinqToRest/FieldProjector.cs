@@ -34,12 +34,13 @@ namespace Messerli.LinqToRest
 
         private void AddUniqueIdentifier()
         {
-            if (!_fields.Any() || _fields.Any(field => field.Name == nameof(IEntity.UniqueIdentifier)))
+            var name = nameof(IEntity.UniqueIdentifier).CamelCase();
+
+            if (!_fields.Any() || _fields.Any(field => field.Name == name))
             {
                 return;
             }
 
-            var name = nameof(IEntity.UniqueIdentifier).CamelCase();
             var fieldExpression = new FieldExpression(typeof(string), name, new FieldDeclaration[0]);
             var fieldDeclaration = new FieldDeclaration(name, fieldExpression);
 

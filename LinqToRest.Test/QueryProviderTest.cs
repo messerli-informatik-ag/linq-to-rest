@@ -113,8 +113,8 @@ namespace Messerli.LinqToRest.Test
             var mockHttp = new MockHttpMessageHandler();
 
             mockHttp
-                .RegisterJsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
-                .RegisterJsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson);
+                .RegisterJsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
+                .RegisterJsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson);
 
             return mockHttp.ToHttpClient();
         }

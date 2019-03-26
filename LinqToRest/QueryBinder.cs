@@ -164,7 +164,7 @@ namespace Messerli.LinqToRest
 
                     if (member.Member.Name == nameof(IEntity.UniqueIdentifier))
                     {
-                        return Expression.Constant(string.Empty);
+                        return new FieldExpression(typeof(string), nameof(IEntity.UniqueIdentifier).CamelCase(), new FieldDeclaration[0]);
                     }
 
                     break;
