@@ -1,14 +1,15 @@
-﻿using Messerli.LinqToRest.Entities;
+﻿using System;
+using System.IO;
+using System.Linq;
+using System.Net.Http;
+using System.Reflection;
+using System.Threading.Tasks;
+using Messerli.LinqToRest.Entities;
 using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
 using Newtonsoft.Json.Linq;
 using Soltys.ChangeCase;
-using System;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Threading.Tasks;
 
 namespace Messerli.LinqToRest
 {
@@ -52,8 +53,12 @@ namespace Messerli.LinqToRest
             var jsonArray = JArray.Parse(content);
 
             var type = typeof(T).GetInnerType();
-
-            return (T)jsonArray.Select(token => Deserialize(type, token));
+            var deserialized = jsonArray.Select(token => Deserialize(type, token)).ToArray();
+            var castMethod = typeof(Enumerable)
+                                 .GetMethod(nameof(Enumerable.Cast)) ?? throw new MissingMethodException();
+            return (T)castMethod
+                .MakeGenericMethod(type)
+                .Invoke(null, new object[] { deserialized });
         }
 
         private object Deserialize(Type type, JToken token)
@@ -66,12 +71,18 @@ namespace Messerli.LinqToRest
 
             var parameters = constructor
                 .GetParameters()
-                .Select(p => p.GetType().IsQueryable()
-                    ? _queryableFactory.CreateQueryable(p.GetType()) as object
-                    : GetField(token, p.Name) as object)
+                .Select(parameter => GetDeserializedParameter(parameter, token))
                 .ToArray();
 
             return constructor.Invoke(parameters);
+        }
+
+        private object GetDeserializedParameter(ParameterInfo parameter, JToken token)
+        {
+            var type = parameter.ParameterType;
+            return type.IsQueryable()
+                ? _queryableFactory.CreateQueryable(type.GetInnerType()) as object
+                : GetField(token, parameter.Name);
         }
 
         private static string GetField(JToken token, string name)

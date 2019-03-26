@@ -47,11 +47,17 @@ namespace Messerli.LinqToRest.Test
 
         private static ResourceRetriever CreateResourceRetriever()
         {
-            return new ResourceRetriever(MockHttpClient(), Substitute.For<IQueryableFactory>());
+            return new ResourceRetriever(
+                MockHttpClient(),
+                new QueryableFactory(
+                    new QueryProvider(
+                        Substitute.For<IResourceRetriever>(),
+                        null,
+                        () => new QueryBinder(new EntityValidator()),
+                        RootUri)));
         }
 
         #region Mock
-
 
         private static HttpClient MockHttpClient()
         {
@@ -82,9 +88,11 @@ namespace Messerli.LinqToRest.Test
         private static string EntityWithQueryableMemberJson => @"
 [
     {
+        ""uniqueIdentifier"": ""Test1"",
         ""name"": ""Test1""
     },
     {
+        ""uniqueIdentifier"": ""Test2"",
         ""name"": ""Test2""
     }
 ]
