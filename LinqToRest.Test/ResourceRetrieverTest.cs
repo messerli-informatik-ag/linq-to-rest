@@ -26,11 +26,11 @@ namespace Messerli.LinqToRest.Test
         {
             var resourceRetriever = CreateResourceRetriever();
 
-            var uri = new Uri(UniqueIdentifierNameResult.Query, UriKind.Absolute);
+            var uri = new Uri(NameResult.Query, UriKind.Absolute);
             var type = typeof(IEnumerable<>).MakeGenericType(new { Name = string.Empty }.GetType());
             var actual = resourceRetriever.RetrieveResource(type, uri);
 
-            Assert.Equal(UniqueIdentifierNameResult.Object, actual);
+            Assert.Equal(NameResult.Object, actual);
         }
 
         [Fact]
@@ -132,6 +132,20 @@ namespace Messerli.LinqToRest.Test
     }
 ]
 ";
+
+        private static QueryResult<object> NameResult => new QueryResult<object>(
+            new Uri(UniqueIdentifierNameRequestUri),
+            new object[]
+            {
+                new
+                {
+                    Name = "Test1"
+                },
+                new
+                {
+                    Name = "Test2"
+                }
+            });
 
         private static QueryResult<object> UniqueIdentifierNameResult => new QueryResult<object>(
             new Uri(UniqueIdentifierNameRequestUri),

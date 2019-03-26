@@ -58,9 +58,16 @@ namespace Messerli.LinqToRest
             var deserialized = jsonArray.Select(token => Deserialize(type, token)).ToArray();
             var castMethod = typeof(Enumerable)
                                  .GetMethod(nameof(Enumerable.Cast)) ?? throw new MissingMethodException();
-            return (T)castMethod
+
+            var castArray = (T)castMethod
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { deserialized });
+
+            var toArrayMethod = typeof(Enumerable)
+                                    .GetMethod(nameof(Enumerable.ToArray)) ?? throw new MissingMethodException();
+            return (T)toArrayMethod
+                .MakeGenericMethod(type)
+                .Invoke(null, new object[] { castArray });
         }
 
         private object Deserialize(Type type, JToken token)
