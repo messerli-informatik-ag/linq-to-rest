@@ -124,21 +124,6 @@ namespace Messerli.LinqToRest.Test
             return new HttpResourceRetriever(MockHttpClient(), new JsonDeserializer(new EnumerableObjectCreator()));
         }
 
-        private static IResourceRetriever AddUriMock<T>(IResourceRetriever resourceRetriever, Uri uri, object value)
-        {
-            resourceRetriever.RetrieveResource<T>(uri).Returns(Task.FromResult((T)value));
-
-            return resourceRetriever;
-        }
-
-        private static IResourceRetriever AddUriMock(Type type, IResourceRetriever resourceRetriever, Uri uri,
-            object[] value)
-        {
-            resourceRetriever.RetrieveResource(type, uri).Returns(Task.FromResult(value));
-
-            return resourceRetriever;
-        }
-
         private static IObjectResolver MockObjectResolver()
         {
             var queryableFactory = new QueryableFactory(MockQueryProviderFactory());
@@ -172,12 +157,6 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
 
-        private static object[] EntityWithQueryableMemberDeserialized => new[]
-        {
-            new EntityWithQueryableMember("Test1", null),
-            new EntityWithQueryableMember("Test2", null)
-        };
-
         private static string EntityWithQueryableMemberJson => @"
 [
     {
@@ -205,12 +184,6 @@ namespace Messerli.LinqToRest.Test
 
         private static Uri UniqueIdentifierNameRequestUri =>
             new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
-
-        private static object[] UniqueIdentifierNameDeserialized => new[]
-        {
-            new {UniqueIdentifier = "Test1", Name = "Test1"},
-            new {UniqueIdentifier = "Test2", Name = "Test2"},
-        };
 
         private static string UniqueIdentifierNameJson => @"
 [
