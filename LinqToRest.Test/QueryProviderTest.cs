@@ -151,9 +151,11 @@ namespace Messerli.LinqToRest.Test
         private static string EntityWithQueryableMemberJson => @"
 [
     {
+        ""uniqueIdentifier"": ""Test1"",
         ""name"": ""Test1""
     },
     {
+        ""uniqueIdentifier"": ""Test1"",
         ""name"": ""Test2""
     }
 ]
