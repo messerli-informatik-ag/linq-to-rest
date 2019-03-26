@@ -35,8 +35,10 @@ namespace Messerli.LinqToRest
 
         public Task<object> RetrieveResource(Type type, Uri uri)
         {
-            var method = typeof(ResourceRetriever).GetMethod(nameof(RetrieveResource))?.MakeGenericMethod(type)
-                         ?? throw new NullReferenceException();
+            var method = typeof(ResourceRetriever)
+                .GetMethods()
+                .First(m => m.Name == nameof(RetrieveResource))
+                .MakeGenericMethod(type);
 
             return (Task<object>)method.Invoke(this, new object[] { uri });
         }
