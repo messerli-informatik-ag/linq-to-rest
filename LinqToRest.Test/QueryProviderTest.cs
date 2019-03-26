@@ -7,7 +7,6 @@ using Messerli.ServerCommunication;
 using NSubstitute;
 using RichardSzalay.MockHttp;
 using Xunit;
-using RestQueryProvider = Messerli.LinqToRest.QueryProvider;
 
 namespace Messerli.LinqToRest.Test
 {
@@ -87,14 +86,7 @@ namespace Messerli.LinqToRest.Test
 
         private static Query<T> CreateQuery<T>()
         {
-            var serviceUri = MockServiceUri();
-            var resourceRetriever = MockResourceRetriever();
-            var objectResolver = MockObjectResolver();
-            var queryBinderFactory = MockQueryBinderFactory();
-
-            var queryProvider =
-                new RestQueryProvider(resourceRetriever, objectResolver, queryBinderFactory, serviceUri);
-
+            var queryProvider = CreateQueryProvider();
             return new Query<T>(queryProvider);
         }
 
