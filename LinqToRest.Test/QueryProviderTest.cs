@@ -22,7 +22,7 @@ namespace Messerli.LinqToRest.Test
 
             var expected = EntityWithQueryableMemberResult;
 
-            Assert.Equal(actual, expected.Query);
+            Assert.Equal(expected.Query, actual);
         }
 
         [Fact]
@@ -34,7 +34,7 @@ namespace Messerli.LinqToRest.Test
 
             var expected = UniqueIdentifierNameResult;
 
-            Assert.Equal(actual, expected.Query);
+            Assert.Equal(expected.Query, actual);
         }
 
         [Fact]
@@ -46,7 +46,7 @@ namespace Messerli.LinqToRest.Test
 
             var expected = UniqueIdentifierNameResult;
 
-            Assert.Equal(actual, expected.Query);
+            Assert.Equal(expected.Query, actual);
         }
 
         [Fact]
@@ -69,7 +69,7 @@ namespace Messerli.LinqToRest.Test
 
             var expected = UniqueIdentifierNameResult;
 
-            Assert.Equal(actual, expected);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -81,7 +81,7 @@ namespace Messerli.LinqToRest.Test
 
             var expected = UniqueIdentifierNameResult;
 
-            Assert.Equal(actual, expected);
+            Assert.Equal(expected, actual);
         }
 
         #region Helper
@@ -153,7 +153,7 @@ namespace Messerli.LinqToRest.Test
 
         #region Data
 
-        private static Uri RootUri => new Uri("http://www.exapmle.com/api/v1/", UriKind.Absolute);
+        private static Uri RootUri => new Uri("http://www.example.com/api/v1/", UriKind.Absolute);
 
         private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
 
