@@ -111,7 +111,7 @@ namespace Messerli.LinqToRest
         {
             var fieldName = name.CamelCase();
 
-            return token[fieldName]
+            return (string)token[fieldName]
                 ?? throw new InvalidDataException($"The field {fieldName} is missing in the JSON response.");
         }
 
