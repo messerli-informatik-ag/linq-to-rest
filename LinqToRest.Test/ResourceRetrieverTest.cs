@@ -40,7 +40,7 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(NameQueryableMemberResult.Query, UriKind.Absolute);
-            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = default(string), QueryableMember = default(IQueryable) }.GetType());
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = default(string), QueryableMember = default(IQueryable<EntityWithSimpleMembers>) }.GetType());
             var actual = resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(NameQueryableMemberResult.Object, actual);
