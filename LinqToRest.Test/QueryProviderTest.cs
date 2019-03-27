@@ -1,10 +1,10 @@
+using System;
+using System.Linq;
+using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using NSubstitute;
 using RichardSzalay.MockHttp;
-using System;
-using System.Linq;
-using System.Net.Http;
 using Xunit;
 
 namespace Messerli.LinqToRest.Test
@@ -17,9 +17,9 @@ namespace Messerli.LinqToRest.Test
             var actual = CreateQuery<EntityWithQueryableMember>()
                 .ToString();
 
-            var expected = EntityWithQueryableMemberResult;
+            var expected = EntityWithQueryableMemberResult.Query;
 
-            Assert.Equal(expected.Query, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -29,9 +29,9 @@ namespace Messerli.LinqToRest.Test
                 .Select(entity => new { entity.Name })
                 .ToString();
 
-            var expected = UniqueIdentifierNameResult;
+            var expected = UniqueIdentifierNameResult.Query;
 
-            Assert.Equal(expected.Query, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
@@ -41,9 +41,9 @@ namespace Messerli.LinqToRest.Test
                 .Select(entity => new { entity.UniqueIdentifier, entity.Name })
                 .ToString();
 
-            var expected = UniqueIdentifierNameResult;
+            var expected = UniqueIdentifierNameResult.Query;
 
-            Assert.Equal(expected.Query, actual);
+            Assert.Equal(expected, actual);
         }
 
         [Fact]
