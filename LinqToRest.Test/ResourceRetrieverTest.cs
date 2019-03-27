@@ -35,6 +35,18 @@ namespace Messerli.LinqToRest.Test
         }
 
         [Fact]
+        public void ReturnsFullRestObjectWithSelect()
+        {
+            var resourceRetriever = CreateResourceRetriever();
+
+            var uri = new Uri(NameNumberResult.Query, UriKind.Absolute);
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = default(string), Number = default(int) }.GetType());
+            var actual = resourceRetriever.RetrieveResource(type, uri);
+
+            Assert.Equal(NameNumberResult.Object, actual);
+        }
+
+        [Fact]
         public void ReturnsRestObjectWithSelectedQueryable()
         {
             var resourceRetriever = CreateResourceRetriever();
@@ -81,6 +93,7 @@ namespace Messerli.LinqToRest.Test
         private static HttpClient MockHttpClient()
         {
             return new HttpClientMockBuilder()
+                .JsonResponse(UniqueIdentifierNameNumberRequestUri, UniqueIdentifierNameNumberJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
                 .Build();
         }
@@ -104,6 +117,21 @@ namespace Messerli.LinqToRest.Test
     {
         ""uniqueIdentifier"": ""Test2"",
         ""name"": ""Test2""
+    }
+]
+";
+
+        private static string UniqueIdentifierNameNumberJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""Test1"",
+        ""name"": ""Test1"",
+        ""number"": ""1""
+    },
+    {
+        ""uniqueIdentifier"": ""Test2"",
+        ""name"": ""Test2"",
+        ""number"": ""2""
     }
 ]
 ";
@@ -140,6 +168,26 @@ namespace Messerli.LinqToRest.Test
                 new
                 {
                     Name = "Test2"
+                }
+            });
+
+
+        private static string UniqueIdentifierNameNumberRequestUri =>
+            $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name,number";
+
+        private static QueryResult<object> NameNumberResult => new QueryResult<object>(
+            new Uri(UniqueIdentifierNameNumberRequestUri),
+            new object[]
+            {
+                new
+                {
+                    Name = "Test1",
+                    Number = 1
+                },
+                new
+                {
+                    Name = "Test2",
+                    Number = 2
                 }
             });
 
