@@ -4,7 +4,6 @@ using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using NSubstitute;
-using RichardSzalay.MockHttp;
 using Xunit;
 
 namespace Messerli.LinqToRest.Test
@@ -104,7 +103,7 @@ namespace Messerli.LinqToRest.Test
 
         private static HttpClient MockHttpClient()
         {
-            var mockHttp = new MockHttpMessageHandler();
+            var mockHttp = new HttpClientMock();
 
             mockHttp
                 .RegisterJsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
@@ -206,17 +205,4 @@ namespace Messerli.LinqToRest.Test
 
         #endregion
     }
-
-    internal static class Extension
-    {
-        public static MockHttpMessageHandler RegisterJsonResponse(
-            this MockHttpMessageHandler httpMessageHandler,
-            string route,
-            string jsonResponse)
-        {
-            httpMessageHandler.When(route).Respond("application/json", jsonResponse);
-            return httpMessageHandler;
-        }
-    }
-
 }
