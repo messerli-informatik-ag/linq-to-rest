@@ -86,14 +86,6 @@ namespace Messerli.LinqToRest.Test
         }
 
 
-        private static QueryBinderFactory MockQueryBinderFactory()
-        {
-            var queryBinderFactory = Substitute.For<QueryBinderFactory>();
-            queryBinderFactory().Returns(new QueryBinder(new EntityValidator()));
-
-            return queryBinderFactory;
-        }
-
         #endregion
 
         #region Data
@@ -127,11 +119,6 @@ namespace Messerli.LinqToRest.Test
         private static QueryProvider CreateQueryProvider(Uri root)
         {
             return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), root);
-        }
-
-        private static IQueryable<T> CreateQuery<T>()
-        {
-            return new Query<T>(CreateQueryProvider(RootUri));
         }
 
         private static IQueryable<T> CreateQuery<T>(string subPath)
