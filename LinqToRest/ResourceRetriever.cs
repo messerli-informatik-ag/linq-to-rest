@@ -73,13 +73,7 @@ namespace Messerli.LinqToRest
 
         private object Deserialize(Type type, JToken token, Uri root)
         {
-            var uniqueIdentifier = GetField(token, nameof(IEntity.UniqueIdentifier));
-
-            // Todo: Use UriBuilder once it's out of Messerli.Update
-            // See <https://github.com/messerli-informatik-ag/server-communication/issues/4>
-            var path = root.GetLeftPart(UriPartial.Path) + "/";
-            var pathUri = new Uri(path, UriKind.Absolute);
-            var resourceUri = new Uri(pathUri, uniqueIdentifier + "/");
+            var resourceUri = GetResourceUri(token, root);
 
             var constructor = type
                 .GetConstructors()
@@ -91,6 +85,18 @@ namespace Messerli.LinqToRest
                 .ToArray();
 
             return constructor.Invoke(parameters);
+        }
+
+        private static Uri GetResourceUri(JToken token, Uri root)
+        {
+            var uniqueIdentifier = GetField(token, nameof(IEntity.UniqueIdentifier));
+
+            // Todo: Use UriBuilder once it's out of Messerli.Update
+            // See <https://github.com/messerli-informatik-ag/server-communication/issues/4>
+            var path = root.GetLeftPart(UriPartial.Path) + "/";
+            var pathUri = new Uri(path, UriKind.Absolute);
+            var resourceUri = new Uri(pathUri, uniqueIdentifier + "/");
+            return resourceUri;
         }
 
         private object GetDeserializedParameter(ParameterInfo parameter, JToken token, Uri uri)
