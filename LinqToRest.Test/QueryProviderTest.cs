@@ -115,14 +115,12 @@ namespace Messerli.LinqToRest.Test
             return new ResourceRetriever(MockHttpClient(), Substitute.For<IQueryableFactory>());
         }
 
-
         private static IObjectResolver MockObjectResolver()
         {
             var queryableFactory = new QueryableFactory(CreateQueryProvider());
 
             return new QueryableObjectResolver(queryableFactory);
         }
-
 
         private static QueryBinderFactory MockQueryBinderFactory()
         {
@@ -184,7 +182,6 @@ namespace Messerli.LinqToRest.Test
                         RootUri)));
         }
 
-
         private static Uri UniqueIdentifierNameRequestUri =>
             new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
 
@@ -216,6 +213,7 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2"
                 }
             });
+
         private static QueryResult<object> NameResult => new QueryResult<object>(
             UniqueIdentifierNameRequestUri,
             new object[]
@@ -229,6 +227,7 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2"
                 }
             });
+
         #endregion
     }
 
