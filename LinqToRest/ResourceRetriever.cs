@@ -97,15 +97,15 @@ namespace Messerli.LinqToRest
         {
             var type = parameter.ParameterType;
             return type.IsQueryable()
-                ? _queryableFactory(type.GetInnerType(), uri) as object
+                ? _queryableFactory(type.GetInnerType(), uri)
                 : GetField(token, parameter.Name);
         }
 
-        private static string GetField(JToken token, string name)
+        private static object GetField(JToken token, string name)
         {
             var fieldName = name.CamelCase();
 
-            return (string)token[fieldName]
+            return token[fieldName]
                 ?? throw new InvalidDataException($"The field {fieldName} is missing in the JSON response.");
         }
 
