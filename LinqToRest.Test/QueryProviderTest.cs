@@ -50,7 +50,7 @@ namespace Messerli.LinqToRest.Test
         [Fact]
         public void ReturnsRestObject()
         {
-            var actual = new QueryResult<object>(
+            var actual = new QueryResult<EntityWithQueryableMember>(
                 CreateQuery<EntityWithQueryableMember>());
 
             var expected = EntityWithQueryableMemberResult;
@@ -84,20 +84,24 @@ namespace Messerli.LinqToRest.Test
 
         #region Helper
 
-        private static Query<T> CreateQuery<T>()
+        private static IQueryable<T> CreateQuery<T>()
         {
-            var queryProvider = CreateQueryProvider();
-            return new Query<T>(queryProvider);
+            return new Query<T>(CreateQueryProvider(RootUri));
+        }
+
+        private static IQueryable<T> CreateQuery<T>(string subPath)
+        {
+            return new Query<T>(CreateQueryProvider(new Uri(RootUri, subPath)));
+        }
+
+        private static QueryProvider CreateQueryProvider(Uri root)
+        {
+            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), root);
         }
 
         #endregion
 
         #region Mock
-
-        private static Uri MockServiceUri()
-        {
-            return RootUri;
-        }
 
         private static HttpClient MockHttpClient()
         {
@@ -108,26 +112,6 @@ namespace Messerli.LinqToRest.Test
                 .RegisterJsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson);
 
             return mockHttp.ToHttpClient();
-        }
-
-        private static IResourceRetriever MockResourceRetriever()
-        {
-            return new ResourceRetriever(MockHttpClient(), Substitute.For<IQueryableFactory>());
-        }
-
-        private static IObjectResolver MockObjectResolver()
-        {
-            var queryableFactory = new QueryableFactory(CreateQueryProvider());
-
-            return new QueryableObjectResolver(queryableFactory);
-        }
-
-        private static QueryBinderFactory MockQueryBinderFactory()
-        {
-            var queryBinderFactory = Substitute.For<QueryBinderFactory>();
-            queryBinderFactory().Returns(new QueryBinder(new EntityValidator()));
-
-            return queryBinderFactory;
         }
 
         #endregion
@@ -151,24 +135,13 @@ namespace Messerli.LinqToRest.Test
 ]
 ";
 
-        private static QueryResult<object> EntityWithQueryableMemberResult => new QueryResult<object>(
+        private static QueryResult<EntityWithQueryableMember> EntityWithQueryableMemberResult => new QueryResult<EntityWithQueryableMember>(
             EntityWithQueryableMemberRequestUri,
-            new object[]
+            new[]
             {
-                new EntityWithQueryableMember(
-                    "Test1",
-                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
-                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
-                new EntityWithQueryableMember(
-                    "Test2",
-                    new Query<EntityWithSimpleMembers>(CreateQueryProvider()))
-                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
+                new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
+                new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")),
             });
-
-        private static QueryProvider CreateQueryProvider()
-        {
-            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), RootUri);
-        }
 
         private static ResourceRetriever CreateResourceRetriever()
         {

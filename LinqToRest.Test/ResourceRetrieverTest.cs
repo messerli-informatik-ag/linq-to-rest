@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
@@ -102,19 +103,23 @@ namespace Messerli.LinqToRest.Test
             new Uri(EntityWithQueryableMemberRequestUri),
             new object[]
             {
-                new EntityWithQueryableMember(
-                    "Test1",
-                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
-                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test1/")))),
-                new EntityWithQueryableMember(
-                    "Test2",
-                    new Query<EntityWithSimpleMembers>(CreateQueryProvider())),
-                        //MockQueryProviderFactory().Create(new Uri(RootUri, "entitywithqueryablemembers/Test2/"))))
+                new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
+                new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/"))
             });
 
-        private static QueryProvider CreateQueryProvider()
+        private static QueryProvider CreateQueryProvider(Uri root)
         {
-            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), RootUri);
+            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), root);
+        }
+
+        private static IQueryable<T> CreateQuery<T>()
+        {
+            return new Query<T>(CreateQueryProvider(RootUri));
+        }
+
+        private static IQueryable<T> CreateQuery<T>(string subPath)
+        {
+            return new Query<T>(CreateQueryProvider(new Uri(RootUri, subPath)));
         }
 
         private static string UniqueIdentifierNameRequestUri =>
