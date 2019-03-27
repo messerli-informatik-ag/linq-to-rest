@@ -175,20 +175,20 @@ namespace Messerli.LinqToRest.Test
             $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name,queryableMember";
 
         private static QueryResult<object> NameQueryableMemberResult => new QueryResult<object>(
-        new Uri(NameQueryableMemberRequestUri),
-        new object[]
-        {
-            new
+            new Uri(NameQueryableMemberRequestUri),
+            new object[]
             {
-                Name = "Test1",
-                QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")
-            },
-            new
-            {
-                Name = "Test2",
-                QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")
-            }
-        });
+                new
+                {
+                    Name = "Test1",
+                    QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")
+                },
+                new
+                {
+                    Name = "Test2",
+                    QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")
+                }
+            });
 
         #endregion
     }
