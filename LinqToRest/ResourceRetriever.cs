@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -89,7 +88,7 @@ namespace Messerli.LinqToRest
 
         private static Uri GetResourceUri(JToken token, Uri root)
         {
-            var uniqueIdentifier = GetField(token, nameof(IEntity.UniqueIdentifier));
+            var uniqueIdentifier = GetField(typeof(string), token, nameof(IEntity.UniqueIdentifier));
 
             // Todo: Use UriBuilder once it's out of Messerli.Update
             // See <https://github.com/messerli-informatik-ag/server-communication/issues/4>
@@ -104,15 +103,15 @@ namespace Messerli.LinqToRest
             var type = parameter.ParameterType;
             return type.IsQueryable()
                 ? _queryableFactory(type.GetInnerType(), uri)
-                : GetField(token, parameter.Name);
+                : GetField(type, token, parameter.Name);
         }
 
-        private static object GetField(JToken token, string name)
+        private static object GetField(Type type, JToken token, string name)
         {
             var fieldName = name.CamelCase();
-
-            return (string)token[fieldName]
-                ?? throw new InvalidDataException($"The field {fieldName} is missing in the JSON response.");
+            var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value))
+                              ?? throw new MissingMethodException();
+            return valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
         }
 
         private async Task<string> GetContent(Uri uri)
