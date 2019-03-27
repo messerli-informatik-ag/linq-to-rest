@@ -128,7 +128,7 @@ namespace Messerli.LinqToRest.Test
         ""name"": ""Test1""
     },
     {
-        ""uniqueIdentifier"": ""Test1"",
+        ""uniqueIdentifier"": ""Test2"",
         ""name"": ""Test2""
     }
 ]
