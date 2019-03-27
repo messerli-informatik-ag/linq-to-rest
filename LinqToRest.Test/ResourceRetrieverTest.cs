@@ -28,10 +28,22 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(NameResult.Query, UriKind.Absolute);
-            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = string.Empty }.GetType());
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = default(string) }.GetType());
             var actual = resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(NameResult.Object, actual);
+        }
+
+        [Fact]
+        public void ReturnsRestObjectWithSelectedQueryable()
+        {
+            var resourceRetriever = CreateResourceRetriever();
+
+            var uri = new Uri(NameQueryableMemberResult.Query, UriKind.Absolute);
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Name = default(string), QueryableMember = default(IQueryable) }.GetType());
+            var actual = resourceRetriever.RetrieveResource(type, uri);
+
+            Assert.Equal(NameQueryableMemberResult.Object, actual);
         }
 
         [Fact]
@@ -40,7 +52,7 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(UniqueIdentifierNameResult.Query, UriKind.Absolute);
-            var type = typeof(IEnumerable<>).MakeGenericType(new { UniqueIdentifier = string.Empty, Name = string.Empty }.GetType());
+            var type = typeof(IEnumerable<>).MakeGenericType(new { UniqueIdentifier = default(string), Name = default(string) }.GetType());
             var actual = resourceRetriever.RetrieveResource(type, uri);
 
             Assert.Equal(UniqueIdentifierNameResult.Object, actual);
@@ -63,7 +75,6 @@ namespace Messerli.LinqToRest.Test
         private static HttpClient MockHttpClient()
         {
             return new HttpClientMock(RootUri)
-                .RegisterJsonResponse(UniqueIdentifierNameRequestUri, UniqueIdentifierNameJson)
                 .RegisterJsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
                 .ToHttpClient();
         }
@@ -125,19 +136,6 @@ namespace Messerli.LinqToRest.Test
         private static string UniqueIdentifierNameRequestUri =>
             $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name";
 
-        private static string UniqueIdentifierNameJson => @"
-[
-    {
-        ""uniqueIdentifier"": ""Test1"",
-        ""name"": ""Test1""
-    },
-    {
-        ""uniqueIdentifier"": ""Test2"",
-        ""name"": ""Test2""
-    }
-]
-";
-
         private static QueryResult<object> NameResult => new QueryResult<object>(
             new Uri(UniqueIdentifierNameRequestUri),
             new object[]
@@ -167,6 +165,24 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2"
                 }
             });
+        private static string NameQueryableMemberRequestUri =>
+            $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name,queryableMember";
+
+        private static QueryResult<object> NameQueryableMemberResult => new QueryResult<object>(
+        new Uri(NameQueryableMemberRequestUri),
+        new object[]
+        {
+            new
+            {
+                Name = "Test1",
+                QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")
+            },
+            new
+            {
+                Name = "Test2",
+                QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")
+            }
+        });
 
         #endregion
     }
