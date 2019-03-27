@@ -5,7 +5,6 @@ using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using Messerli.LinqToRest.Entities;
-using Messerli.QueryProvider;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
 using Newtonsoft.Json.Linq;
@@ -13,12 +12,14 @@ using Soltys.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
+    public delegate IQueryable<object> QueryableFactory(Type type, Uri uri);
+
     public class ResourceRetriever : IResourceRetriever
     {
         private readonly HttpClient _httpClient;
-        private readonly IQueryableFactory _queryableFactory;
+        private readonly QueryableFactory _queryableFactory;
 
-        public ResourceRetriever(HttpClient httpClient, IQueryableFactory queryableFactory)
+        public ResourceRetriever(HttpClient httpClient, QueryableFactory queryableFactory)
         {
             _httpClient = httpClient;
             _queryableFactory = queryableFactory;
@@ -29,8 +30,8 @@ namespace Messerli.LinqToRest
             var content = GetContent(uri).Result;
 
             return typeof(T).IsEnumerable()
-                ? DeserializeArray<T>(content)
-                : DeserializeObject<T>(content);
+                ? DeserializeArray<T>(content, uri)
+                : DeserializeObject<T>(content, uri);
         }
 
         public object RetrieveResource(Type type, Uri uri)
@@ -43,19 +44,19 @@ namespace Messerli.LinqToRest
             return method.Invoke(this, new object[] { uri });
         }
 
-        private T DeserializeObject<T>(string content)
+        private T DeserializeObject<T>(string content, Uri uri)
         {
             var jsonObject = JObject.Parse(content);
 
-            return (T)Deserialize(typeof(T), jsonObject);
+            return (T)Deserialize(typeof(T), jsonObject, uri);
         }
 
-        private T DeserializeArray<T>(string content)
+        private T DeserializeArray<T>(string content, Uri uri)
         {
             var jsonArray = JArray.Parse(content);
 
             var type = typeof(T).GetInnerType();
-            var deserialized = jsonArray.Select(token => Deserialize(type, token)).ToArray();
+            var deserialized = jsonArray.Select(token => Deserialize(type, token, uri)).ToArray();
             var castMethod = typeof(Enumerable)
                                  .GetMethod(nameof(Enumerable.Cast)) ?? throw new MissingMethodException();
 
@@ -70,9 +71,14 @@ namespace Messerli.LinqToRest
                 .Invoke(null, new object[] { castArray });
         }
 
-        private object Deserialize(Type type, JToken token)
+        private object Deserialize(Type type, JToken token, Uri root)
         {
             var uniqueIdentifier = GetField(token, nameof(IEntity.UniqueIdentifier));
+
+            // todo: make UriBuilder
+            var path = root.GetLeftPart(UriPartial.Path) + "/";
+            var pathUri = new Uri(path, UriKind.Absolute);
+            var resourceUri = new Uri(pathUri, uniqueIdentifier);
 
             var constructor = type
                 .GetConstructors()
@@ -80,17 +86,17 @@ namespace Messerli.LinqToRest
 
             var parameters = constructor
                 .GetParameters()
-                .Select(parameter => GetDeserializedParameter(parameter, token))
+                .Select(parameter => GetDeserializedParameter(parameter, token, resourceUri))
                 .ToArray();
 
             return constructor.Invoke(parameters);
         }
 
-        private object GetDeserializedParameter(ParameterInfo parameter, JToken token)
+        private object GetDeserializedParameter(ParameterInfo parameter, JToken token, Uri uri)
         {
             var type = parameter.ParameterType;
             return type.IsQueryable()
-                ? _queryableFactory.CreateQueryable(type.GetInnerType()) as object
+                ? _queryableFactory(type.GetInnerType(), uri) as object
                 : GetField(token, parameter.Name);
         }
 

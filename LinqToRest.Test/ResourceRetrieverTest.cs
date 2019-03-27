@@ -62,12 +62,16 @@ namespace Messerli.LinqToRest.Test
         {
             return new ResourceRetriever(
                 MockHttpClient(),
-                new QueryableFactory(
-                    new QueryProvider(
+                (type, uri) =>
+                {
+                    var queryProvider = new QueryProvider(
                         Substitute.For<IResourceRetriever>(),
                         null,
                         () => new QueryBinder(new EntityValidator()),
-                        RootUri)));
+                        uri);
+
+                    return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
+                });
         }
 
         #region Mock

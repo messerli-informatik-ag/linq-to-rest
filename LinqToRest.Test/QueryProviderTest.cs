@@ -1,11 +1,10 @@
+using Messerli.LinqToRest.Test.Stub;
+using Messerli.QueryProvider;
+using NSubstitute;
+using RichardSzalay.MockHttp;
 using System;
 using System.Linq;
 using System.Net.Http;
-using Messerli.LinqToRest.Test.Stub;
-using Messerli.QueryProvider;
-using Messerli.ServerCommunication;
-using NSubstitute;
-using RichardSzalay.MockHttp;
 using Xunit;
 
 namespace Messerli.LinqToRest.Test
@@ -147,12 +146,16 @@ namespace Messerli.LinqToRest.Test
         {
             return new ResourceRetriever(
                 MockHttpClient(),
-                new QueryableFactory(
-                    new QueryProvider(
+                (type, uri) =>
+                {
+                    var queryProvider = new QueryProvider(
                         Substitute.For<IResourceRetriever>(),
                         null,
                         () => new QueryBinder(new EntityValidator()),
-                        RootUri)));
+                        uri);
+
+                    return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
+                });
         }
 
         private static Uri UniqueIdentifierNameRequestUri =>
