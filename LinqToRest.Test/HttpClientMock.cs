@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using RichardSzalay.MockHttp;
 
@@ -7,12 +6,10 @@ namespace Messerli.LinqToRest.Test
 {
     internal class HttpClientMock
     {
-        private readonly string _root;
         private readonly MockHttpMessageHandler _mockHttp;
 
-        public HttpClientMock(Uri root)
+        public HttpClientMock()
         {
-            _root = root.ToString();
             _mockHttp = new MockHttpMessageHandler();
         }
 
