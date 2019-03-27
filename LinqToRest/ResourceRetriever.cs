@@ -78,7 +78,7 @@ namespace Messerli.LinqToRest
             // todo: make UriBuilder
             var path = root.GetLeftPart(UriPartial.Path) + "/";
             var pathUri = new Uri(path, UriKind.Absolute);
-            var resourceUri = new Uri(pathUri, uniqueIdentifier);
+            var resourceUri = new Uri(pathUri, uniqueIdentifier + "/");
 
             var constructor = type
                 .GetConstructors()
