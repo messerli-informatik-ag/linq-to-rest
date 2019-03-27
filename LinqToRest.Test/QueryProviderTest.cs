@@ -103,10 +103,10 @@ namespace Messerli.LinqToRest.Test
 
         private static HttpClient MockHttpClient()
         {
-            return new HttpClientMock()
-                .RegisterJsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
-                .RegisterJsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
-                .ToHttpClient();
+            return new HttpClientMockBuilder()
+                .JsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
+                .JsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
+                .Build();
         }
 
         #endregion

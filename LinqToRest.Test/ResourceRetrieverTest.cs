@@ -80,9 +80,9 @@ namespace Messerli.LinqToRest.Test
 
         private static HttpClient MockHttpClient()
         {
-            return new HttpClientMock()
-                .RegisterJsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
-                .ToHttpClient();
+            return new HttpClientMockBuilder()
+                .JsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
+                .Build();
         }
 
 

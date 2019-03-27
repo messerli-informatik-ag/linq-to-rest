@@ -4,23 +4,23 @@ using RichardSzalay.MockHttp;
 
 namespace Messerli.LinqToRest.Test
 {
-    internal class HttpClientMock
+    internal class HttpClientMockBuilder
     {
         private readonly MockHttpMessageHandler _mockHttp;
 
-        public HttpClientMock()
+        public HttpClientMockBuilder()
         {
             _mockHttp = new MockHttpMessageHandler();
         }
 
-        public HttpClientMock RegisterJsonResponse(string uri, string jsonResponse)
+        public HttpClientMockBuilder JsonResponse(string uri, string jsonResponse)
         {
             _mockHttp.When(uri).Respond("application/json", jsonResponse);
 
             return this;
         }
 
-        public HttpClientMock RegisterFileResponse(string uri, string fileResponse)
+        public HttpClientMockBuilder FileResponse(string uri, string fileResponse)
         {
             var contentLength = System.Text.Encoding.Unicode.GetByteCount(fileResponse).ToString();
             var headers = new[] { new KeyValuePair<string, string>("content-length", contentLength) };
@@ -30,7 +30,7 @@ namespace Messerli.LinqToRest.Test
             return this;
         }
 
-        public HttpClient ToHttpClient()
+        public HttpClient Build()
         {
             return _mockHttp.ToHttpClient();
         }
