@@ -30,4 +30,4 @@ script:
  - mono ./.paket/paket.exe install
  - dotnet restore
  - dotnet build
- - dotnet test
+ - dotnet test --verbosity d
