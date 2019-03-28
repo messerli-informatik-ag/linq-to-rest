@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Messerli.LinqToRest
 {
     public interface IResourceRetriever
     {
-        T RetrieveResource<T>(Uri uri);
+        Task<T> RetrieveResource<T>(Uri uri);
     }
 }

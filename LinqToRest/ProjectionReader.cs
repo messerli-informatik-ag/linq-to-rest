@@ -11,7 +11,7 @@ namespace Messerli.LinqToRest
 
         public ProjectionReader(IResourceRetriever resourceRetriever, IObjectResolver objectResolver, Uri uri)
         {
-            _enumerator = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).GetEnumerator();
+            _enumerator = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result.GetEnumerator();
         }
 
         public IEnumerator<T> GetEnumerator()
