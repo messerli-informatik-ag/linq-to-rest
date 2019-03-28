@@ -1,9 +1,12 @@
 ﻿using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Entities;
 using Messerli.LinqToRest.Expressions;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Linq.Expressions;
+using Soltys.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -23,7 +26,25 @@ namespace Messerli.LinqToRest
             _fields = new List<FieldDeclaration>();
             _candidates = _nominator.Nominate(expression);
 
-            return new ProjectedFields(Visit(expression), _fields.AsReadOnly());
+            var visitedExpression = Visit(expression);
+            AddUniqueIdentifier();
+
+            return new ProjectedFields(visitedExpression, _fields.AsReadOnly());
+        }
+
+        private void AddUniqueIdentifier()
+        {
+            var name = nameof(IEntity.UniqueIdentifier).CamelCase();
+
+            if (!_fields.Any() || _fields.Any(field => field.Name == name))
+            {
+                return;
+            }
+
+            var fieldExpression = new FieldExpression(typeof(string), name, new FieldDeclaration[0]);
+            var fieldDeclaration = new FieldDeclaration(name, fieldExpression);
+
+            _fields.Insert(0, fieldDeclaration);
         }
 
         public override Expression Visit(Expression expression)

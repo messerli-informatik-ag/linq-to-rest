@@ -1,8 +1,7 @@
-﻿using Messerli.LinqToRest.Expressions;
-using Messerli.QueryProvider;
-using Messerli.ServerCommunication;
-using System;
+﻿using System;
 using System.Linq.Expressions;
+using Messerli.LinqToRest.Expressions;
+using Messerli.QueryProvider;
 
 namespace Messerli.LinqToRest
 {
@@ -34,7 +33,6 @@ namespace Messerli.LinqToRest
 
             return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever, uri);
         }
-
 
         private TranslateResult Translate(Expression expression)
         {

@@ -1,4 +1,5 @@
 ﻿using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Entities;
 using Messerli.LinqToRest.Expressions;
 using Soltys.ChangeCase;
 using System;
@@ -152,14 +153,18 @@ namespace Messerli.LinqToRest
                         .Constructor
                         .GetParameters()
                         .Select(p => p.Name.PascalCase())
-                        .Zip(newExpression.Arguments,
-                            (argument, parameter) => new { argument, parameter })
-                        .First(type => type.argument == member.Member.Name)
+                        .Zip(newExpression.Arguments, (argument, parameter) => new { argument, parameter })
+                        .FirstOrDefault(type => type.argument == member.Member.Name)?
                         .parameter;
 
                     if (matchingArgument != null)
                     {
                         return matchingArgument;
+                    }
+
+                    if (member.Member.Name == nameof(IEntity.UniqueIdentifier))
+                    {
+                        return new FieldExpression(typeof(string), nameof(IEntity.UniqueIdentifier).CamelCase(), new FieldDeclaration[0]);
                     }
 
                     break;

@@ -1,12 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using Messerli.LinqToRest.Entities;
+﻿using Messerli.LinqToRest.Entities;
+using System;
 
 namespace Messerli.LinqToRest.Test.Stub
 {
-    public class EntityWithSimpleMembers : IEntity
+    public class EntityWithSimpleMembers : IEntity, IEquatable<EntityWithSimpleMembers>
     {
         public EntityWithSimpleMembers(string name, int number)
         {
@@ -19,5 +16,41 @@ namespace Messerli.LinqToRest.Test.Stub
         public int Number { get; }
 
         public string UniqueIdentifier => Name;
+
+        #region manualy created equality functions
+
+        public bool Equals(EntityWithSimpleMembers other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return string.Equals(Name, other.Name) && Number == other.Number;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            return obj.GetType() == GetType() && Equals((EntityWithSimpleMembers)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return ((Name != null ? Name.GetHashCode() : 0) * 397) ^ Number;
+            }
+        }
+
+        public static bool operator ==(EntityWithSimpleMembers left, EntityWithSimpleMembers right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(EntityWithSimpleMembers left, EntityWithSimpleMembers right)
+        {
+            return !Equals(left, right);
+        }
+
+        #endregion
     }
 }
