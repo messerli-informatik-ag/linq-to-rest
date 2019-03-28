@@ -41,8 +41,10 @@ namespace Messerli.LinqToRest
                 .MakeGenericMethod(type);
 
             var task = (Task)method.Invoke(this, new object[] { uri });
+            await task;
             var resultProperty = task.GetType().GetProperty(nameof(Task<object>.Result)) ??
                                  throw new MissingMemberException();
+
             return resultProperty.GetValue(task);
         }
 
