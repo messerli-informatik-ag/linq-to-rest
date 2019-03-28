@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using Messerli.ServerCommunication;
 
 namespace Messerli.LinqToRest
 {
@@ -9,7 +8,7 @@ namespace Messerli.LinqToRest
     {
         private readonly IEnumerator<T> _enumerator;
 
-        public ProjectionReader(IResourceRetriever resourceRetriever, IObjectResolver objectResolver, Uri uri)
+        public ProjectionReader(IResourceRetriever resourceRetriever, Uri uri)
         {
             _enumerator = resourceRetriever.RetrieveResource<IEnumerable<T>>(uri).Result.GetEnumerator();
         }

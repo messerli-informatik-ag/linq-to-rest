@@ -94,7 +94,7 @@ namespace Messerli.LinqToRest.Test
 
         private static QueryProvider CreateQueryProvider(Uri root)
         {
-            return new QueryProvider(CreateResourceRetriever(), null, () => new QueryBinder(new EntityValidator()), root);
+            return new QueryProvider(CreateResourceRetriever(), () => new QueryBinder(new EntityValidator()), root);
         }
 
         #endregion
@@ -146,7 +146,6 @@ namespace Messerli.LinqToRest.Test
                 {
                     var queryProvider = new QueryProvider(
                         Substitute.For<IResourceRetriever>(),
-                        null,
                         () => new QueryBinder(new EntityValidator()),
                         uri);
 
