@@ -5,3 +5,6 @@
 
 ## 0.2.0
 - Fix `Select`ed subqueries using the root url instead of a sub-resource
+
+## TBA
+- Add enum support
