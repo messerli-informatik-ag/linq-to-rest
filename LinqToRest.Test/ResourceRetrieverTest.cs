@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
@@ -87,6 +88,18 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expected, actual);
         }
 
+
+        [Fact]
+        public async System.Threading.Tasks.Task ThrowOnInvalidEnumValue()
+        {
+            var resourceRetriever = CreateResourceRetriever();
+
+            var uri = new Uri(InvalidEnumRequestUri, UriKind.Absolute);
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Enum = TestEnum.One }.GetType());
+
+            await Assert.ThrowsAsync<InvalidEnumArgumentException>(() => resourceRetriever.RetrieveResource(type, uri));
+        }
+
         private static ResourceRetriever CreateResourceRetriever()
         {
             return new ResourceRetriever(
@@ -110,6 +123,7 @@ namespace Messerli.LinqToRest.Test
                 .JsonResponse(UniqueIdentifierNameNumberRequestUri, UniqueIdentifierNameNumberJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
                 .JsonResponse(EnumRequestUri, EntityWithEnumMemberJson)
+                .JsonResponse(InvalidEnumRequestUri, InvalidEnumJson)
                 .Build();
         }
 
@@ -241,8 +255,7 @@ namespace Messerli.LinqToRest.Test
                 }
             });
 
-        private static string EnumRequestUri =>
-            $"{RootUri}entitywithenummembers";
+        private static string EnumRequestUri => $"{RootUri}entitywithenummembers";
 
         private static string EntityWithEnumMemberJson => @"
 [
@@ -269,6 +282,17 @@ namespace Messerli.LinqToRest.Test
                 new { Enum = TestEnum.Two },
                 new { Enum = TestEnum.Three }
             });
+
+        private static string InvalidEnumRequestUri => $"{RootUri}invaludenummembers";
+
+        private static string InvalidEnumJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""One"",
+        ""enum"": ""NoEnumValue""
+    }
+]
+";
 
         #endregion
     }

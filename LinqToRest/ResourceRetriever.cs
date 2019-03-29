@@ -1,8 +1,10 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using Funcky.Extensions;
 using Messerli.LinqToRest.Entities;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
@@ -106,9 +108,42 @@ namespace Messerli.LinqToRest
         private object GetDeserializedParameter(ParameterInfo parameter, JToken token, Uri uri)
         {
             var type = parameter.ParameterType;
+
             return type.IsQueryable()
                 ? _queryableFactory(type.GetInnerType(), uri)
-                : GetField(type, token, parameter.Name);
+                : type.IsEnum
+                    ? GetEnumFromType(type, token, parameter.Name)
+                    : GetField(type, token, parameter.Name);
+        }
+
+        private static object GetEnumFromType(Type type, JToken token, string name)
+        {
+            var getEnum = typeof(ResourceRetriever).GetMethod(nameof(GetEnum))?.MakeGenericMethod(type);
+
+            try
+            {
+                return getEnum is null
+                    ? throw new InvalidOperationException()
+                    : getEnum.Invoke(null, new object[] {token, name});
+            }
+            catch (System.Reflection.TargetInvocationException e)
+            {
+                if (e.InnerException != null)
+                {
+                    throw e.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public static T GetEnum<T>(JToken token, string name) where T : struct
+        {
+            var candidate = GetField(typeof(string), token, name) as string;
+            var parsed = candidate.TryParseEnum<T>();
+
+            return parsed.Match(false, e => true)
+                ? parsed.Match(default(T), e => e)
+                : throw new InvalidEnumArgumentException();
         }
 
         private static object GetField(Type type, JToken token, string name)
