@@ -72,6 +72,21 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expected, actual);
         }
 
+
+        [Fact]
+        public async void ReturnsRestObjectWithEnum()
+        {
+            var resourceRetriever = CreateResourceRetriever();
+
+            var uri = new Uri(EnumResult.Query, UriKind.Absolute);
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Enum = TestEnum.One }.GetType());
+
+            var actual = await resourceRetriever.RetrieveResource(type, uri);
+            var expected = EnumResult.Object;
+
+            Assert.Equal(expected, actual);
+        }
+
         private static ResourceRetriever CreateResourceRetriever()
         {
             return new ResourceRetriever(
@@ -94,6 +109,7 @@ namespace Messerli.LinqToRest.Test
             return new HttpClientMockBuilder()
                 .JsonResponse(UniqueIdentifierNameNumberRequestUri, UniqueIdentifierNameNumberJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
+                .JsonResponse(EnumRequestUri, EntityWithEnumMemberJson)
                 .Build();
         }
 
@@ -205,6 +221,7 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2"
                 }
             });
+
         private static string NameQueryableMemberRequestUri =>
             $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name,queryableMember";
 
@@ -222,6 +239,35 @@ namespace Messerli.LinqToRest.Test
                     Name = "Test2",
                     QueryableMember = CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")
                 }
+            });
+
+        private static string EnumRequestUri =>
+            $"{RootUri}entitywithenummembers";
+
+        private static string EntityWithEnumMemberJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""One"",
+        ""enum"": ""One""
+    },
+    {
+        ""uniqueIdentifier"": ""Two"",
+        ""enum"": ""Two""
+    },
+    {
+        ""uniqueIdentifier"": ""Three"",
+        ""enum"": ""Three""
+    },
+]
+";
+
+        private static QueryResult<object> EnumResult => new QueryResult<object>(
+            new Uri(EnumRequestUri),
+            new object[]
+            {
+                new { Enum = TestEnum.One },
+                new { Enum = TestEnum.Two },
+                new { Enum = TestEnum.Three }
             });
 
         #endregion
