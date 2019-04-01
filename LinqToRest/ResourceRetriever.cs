@@ -1,10 +1,8 @@
 ﻿using System;
-using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
-using Funcky.Extensions;
 using Messerli.LinqToRest.Entities;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
@@ -121,7 +119,7 @@ namespace Messerli.LinqToRest
             var candidate = GetField(typeof(string), token, name) as string
                 ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
 
-            return TryParseEnum(candidate, type);
+            return candidate.TryParseToEnumElement(type);
         }
 
         private static object GetField(Type type, JToken token, string name)
@@ -148,42 +146,5 @@ namespace Messerli.LinqToRest
 
             return await distributionsResponse.Content.ReadAsStringAsync();
         }
-
-        #region Extract to Utility?
-
-        private static object TryParseEnum(string candidate, Type type)
-        {
-            if (!type.IsEnum)
-            {
-                throw new ArgumentException($"{type.Name} is not an enum type!");
-            }
-
-            var tryParse = typeof(ResourceRetriever).GetMethod(nameof(TryParseEnum))?.MakeGenericMethod(type)
-                           ?? throw new MissingMethodException();
-
-            try
-            {
-                return tryParse.Invoke(null, new object[] { candidate });
-            }
-            catch (TargetInvocationException e)
-            {
-                if (e.InnerException != null)
-                {
-                    throw e.InnerException;
-                }
-                throw;
-            }
-        }
-
-        public static T TryParseEnum<T>(string candidate) where T : struct
-        {
-            var parsed = candidate.TryParseEnum<T>();
-
-            return parsed.Match(false, @enum => true)
-                ? parsed.Match(default(T), @enum => @enum)
-                : throw new InvalidEnumArgumentException(candidate);
-        }
-
-        #endregion
     }
 }
