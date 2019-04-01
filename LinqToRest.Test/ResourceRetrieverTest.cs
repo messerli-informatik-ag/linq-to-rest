@@ -80,7 +80,7 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = CreateResourceRetriever();
 
             var uri = new Uri(EnumResult.Query, UriKind.Absolute);
-            var type = typeof(IEnumerable<>).MakeGenericType(new { Enum = TestEnum.One }.GetType());
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Enum = default(TestEnum) }.GetType());
 
             var actual = await resourceRetriever.RetrieveResource(type, uri);
             var expected = EnumResult.Object;
