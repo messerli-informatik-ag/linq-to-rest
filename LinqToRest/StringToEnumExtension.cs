@@ -36,8 +36,8 @@ namespace Messerli.LinqToRest
         {
             var parsed = candidate.TryParseEnum<T>();
 
-            return parsed.Match(false, @enum => true)
-                ? parsed.Match(default(T), @enum => @enum)
+            return parsed.Match(none: false, some: @enum => true)
+                ? parsed.Match(none: default(T), some: @enum => @enum)
                 : throw new InvalidEnumArgumentException(candidate);
         }
     }
