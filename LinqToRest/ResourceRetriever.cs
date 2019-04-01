@@ -141,8 +141,8 @@ namespace Messerli.LinqToRest
             var candidate = GetField(typeof(string), token, name) as string;
             var parsed = candidate.TryParseEnum<T>();
 
-            return parsed.Match(false, e => true)
-                ? parsed.Match(default(T), e => e)
+            return parsed.Match(false, @enum => true)
+                ? parsed.Match(default(T), @enum => @enum)
                 : throw new InvalidEnumArgumentException();
         }
 
