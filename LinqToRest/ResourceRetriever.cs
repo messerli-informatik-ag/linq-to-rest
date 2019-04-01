@@ -112,38 +112,16 @@ namespace Messerli.LinqToRest
             return type.IsQueryable()
                 ? _queryableFactory(type.GetInnerType(), uri)
                 : type.IsEnum
-                    ? GetEnumFromType(type, token, parameter.Name)
+                    ? GetEnum(type, token, parameter.Name)
                     : GetField(type, token, parameter.Name);
         }
 
-        private static object GetEnumFromType(Type type, JToken token, string name)
+        private static object GetEnum(Type type, JToken token, string name)
         {
-            var getEnum = typeof(ResourceRetriever).GetMethod(nameof(GetEnum))?.MakeGenericMethod(type);
+            var candidate = GetField(typeof(string), token, name) as string
+                ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
 
-            try
-            {
-                return getEnum is null
-                    ? throw new InvalidOperationException()
-                    : getEnum.Invoke(null, new object[] {token, name});
-            }
-            catch (System.Reflection.TargetInvocationException e)
-            {
-                if (e.InnerException != null)
-                {
-                    throw e.InnerException;
-                }
-                throw;
-            }
-        }
-
-        public static T GetEnum<T>(JToken token, string name) where T : struct
-        {
-            var candidate = GetField(typeof(string), token, name) as string;
-            var parsed = candidate.TryParseEnum<T>();
-
-            return parsed.Match(false, @enum => true)
-                ? parsed.Match(default(T), @enum => @enum)
-                : throw new InvalidEnumArgumentException();
+            return TryParseEnum(candidate, type);
         }
 
         private static object GetField(Type type, JToken token, string name)
@@ -151,6 +129,7 @@ namespace Messerli.LinqToRest
             var fieldName = name.CamelCase();
             var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value))
                               ?? throw new MissingMethodException();
+
             return valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
         }
 
@@ -169,5 +148,42 @@ namespace Messerli.LinqToRest
 
             return await distributionsResponse.Content.ReadAsStringAsync();
         }
+
+        #region Extract to Utility?
+
+        private static object TryParseEnum(string candidate, Type type)
+        {
+            if (!type.IsEnum)
+            {
+                throw new ArgumentException($"{type.Name} is not an enum type!");
+            }
+
+            var tryParse = typeof(ResourceRetriever).GetMethod(nameof(TryParseEnum))?.MakeGenericMethod(type)
+                           ?? throw new MissingMethodException();
+
+            try
+            {
+                return tryParse.Invoke(null, new object[] { candidate });
+            }
+            catch (TargetInvocationException e)
+            {
+                if (e.InnerException != null)
+                {
+                    throw e.InnerException;
+                }
+                throw;
+            }
+        }
+
+        public static T TryParseEnum<T>(string candidate) where T : struct
+        {
+            var parsed = candidate.TryParseEnum<T>();
+
+            return parsed.Match(false, @enum => true)
+                ? parsed.Match(default(T), @enum => @enum)
+                : throw new InvalidEnumArgumentException(candidate);
+        }
+
+        #endregion
     }
 }
