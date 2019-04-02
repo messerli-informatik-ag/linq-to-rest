@@ -35,15 +35,20 @@ namespace Messerli.LinqToRest
             }
             
             var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
-            var queryableFactory = CreateQueryableFactory(queryProvider);
+            var queryableFactory = CreateQueryableFactory(resourceRetriever, queryBinderFactory);
             resourceRetriever.QueryableFactory = queryableFactory;
 
             return queryProvider;
         }
 
-        private static QueryableFactory CreateQueryableFactory(QueryProvider subQueryProvider)
+        private static QueryableFactory CreateQueryableFactory(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory)
         {
-            return (type, uri) => Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), subQueryProvider) as IQueryable<object>;
+            return (type, uri) =>
+            {
+                var subQueryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, uri);
+                return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), subQueryProvider) as
+                        IQueryable<object>;
+            };
         }
 
         private ResourceRetriever CreateResourceRetriever()
