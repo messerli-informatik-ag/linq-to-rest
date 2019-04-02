@@ -84,7 +84,7 @@ namespace Messerli.LinqToRest.Test
 
         private static IQueryable<T> CreateQuery<T>()
         {
-            return new QueryProviderBuilder()
+            return new QueryableBuilder()
                 .Root(RootUri)
                 .HttpClient(MockHttpClient())
                 .Build<T>();
@@ -92,7 +92,7 @@ namespace Messerli.LinqToRest.Test
 
         private static IQueryable<T> CreateQuery<T>(string subPath)
         {
-            return new QueryProviderBuilder()
+            return new QueryableBuilder()
                 .Root(new Uri(RootUri, subPath))
                 .HttpClient(MockHttpClient())
                 .Build<T>();
