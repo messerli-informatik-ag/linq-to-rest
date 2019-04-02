@@ -26,6 +26,7 @@ namespace Messerli.LinqToRest
         {
             var resourceRetriever = CreateResourceRetriever();
             var queryBinderFactory = CreateQueryBinderFactory();
+            
             if (_uri is null)
             {
                 throw new QueryProviderBuilderException($"Root uri was not configured. Call .{nameof(Root)}(...) before .{nameof(Build)}().");
@@ -47,7 +48,7 @@ namespace Messerli.LinqToRest
             return new ResourceRetriever(_httpClient, queryableFactory);
         }
 
-        private QueryBinderFactory CreateQueryBinderFactory()
+        private static QueryBinderFactory CreateQueryBinderFactory()
         {
             var entityValidator = CreateEntityValidator();
             return () => new QueryBinder(entityValidator);
