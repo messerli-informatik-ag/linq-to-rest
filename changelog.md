@@ -11,3 +11,7 @@
 
 ## 0.3.0
 - Add composition root via `QueryProviderBuilder`
+
+## TBA
+- Let `QueryProviderBuilder` return an `IQueryable<T>` directly
+- Provide an interface for `QueryProviderBuilder`
