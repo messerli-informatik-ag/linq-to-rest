@@ -18,7 +18,7 @@ namespace Messerli.LinqToRest.Test
         {
             var builder = new QueryProviderBuilder();
             var queryProvider = builder
-                .Root(new Uri("https://www.example.com"))
+                .Root(RootStub)
                 .Build();
             
             Assert.NotNull(queryProvider);
@@ -31,11 +31,12 @@ namespace Messerli.LinqToRest.Test
             var httpClient = new MockHttpMessageHandler().ToHttpClient();
             var queryProvider = builder
                 .HttpClient(httpClient)
-                .Root(new Uri("https://www.example.com"))
+                .Root(RootStub)
                 .Build();
             
             Assert.NotNull(queryProvider);
         }
-        
+
+        private static Uri RootStub => new Uri("https://www.example.com");
     }
 }
