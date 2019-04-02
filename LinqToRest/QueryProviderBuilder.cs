@@ -36,6 +36,8 @@ namespace Messerli.LinqToRest
             
             var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
             var queryableFactory = CreateQueryableFactory(resourceRetriever, queryBinderFactory);
+            
+            // Resolve circular dependency
             resourceRetriever.QueryableFactory = queryableFactory;
 
             return queryProvider;
