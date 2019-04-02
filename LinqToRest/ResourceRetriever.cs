@@ -106,9 +106,20 @@ namespace Messerli.LinqToRest
         private object GetDeserializedParameter(ParameterInfo parameter, JToken token, Uri uri)
         {
             var type = parameter.ParameterType;
+
             return type.IsQueryable()
                 ? _queryableFactory(type.GetInnerType(), uri)
-                : GetField(type, token, parameter.Name);
+                : type.IsEnum
+                    ? GetEnum(type, token, parameter.Name)
+                    : GetField(type, token, parameter.Name);
+        }
+
+        private static object GetEnum(Type type, JToken token, string name)
+        {
+            var candidate = GetField(typeof(string), token, name) as string
+                ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
+
+            return candidate.ParseToEnumElement(type);
         }
 
         private static object GetField(Type type, JToken token, string name)
@@ -116,6 +127,7 @@ namespace Messerli.LinqToRest
             var fieldName = name.CamelCase();
             var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value))
                               ?? throw new MissingMethodException();
+
             return valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
         }
 

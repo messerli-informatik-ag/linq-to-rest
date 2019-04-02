@@ -109,6 +109,21 @@ namespace Messerli.LinqToRest.Test
                 .Build();
         }
 
+        private static ResourceRetriever CreateResourceRetriever()
+        {
+            return new ResourceRetriever(
+                MockHttpClient(),
+                (type, uri) =>
+                {
+                    var queryProvider = new QueryProvider(
+                        Substitute.For<IResourceRetriever>(),
+                        () => new QueryBinder(new EntityValidator()),
+                        uri);
+
+                    return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
+                });
+        }
+
         #endregion
 
         #region Data
@@ -137,21 +152,6 @@ namespace Messerli.LinqToRest.Test
                 new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
                 new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")),
             });
-
-        private static ResourceRetriever CreateResourceRetriever()
-        {
-            return new ResourceRetriever(
-                MockHttpClient(),
-                (type, uri) =>
-                {
-                    var queryProvider = new QueryProvider(
-                        Substitute.For<IResourceRetriever>(),
-                        () => new QueryBinder(new EntityValidator()),
-                        uri);
-
-                    return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
-                });
-        }
 
         private static Uri UniqueIdentifierNameRequestUri =>
             new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
