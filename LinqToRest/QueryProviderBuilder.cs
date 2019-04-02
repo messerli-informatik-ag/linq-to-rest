@@ -24,7 +24,7 @@ namespace Messerli.LinqToRest
             return this;
         }
         
-        public QueryProviderBase Build()
+        public IQueryable<T> Build<T>()
         {
             ValidateConfiguration();
             
@@ -37,7 +37,7 @@ namespace Messerli.LinqToRest
             // Resolve circular dependency
             resourceRetriever.QueryableFactory = queryableFactory;
 
-            return queryProvider;
+            return new Query<T>(queryProvider);
         }
 
         private void ValidateConfiguration()
