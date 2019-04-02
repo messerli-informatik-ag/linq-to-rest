@@ -5,7 +5,7 @@ using Funcky.Extensions;
 
 namespace Messerli.LinqToRest
 {
-    public static class StringToEnumExtension
+    internal static class StringToEnumExtension
     {
         public static object ParseToEnumElement(this string candidate, Type type)
         {
