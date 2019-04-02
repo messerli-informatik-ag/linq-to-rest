@@ -37,6 +37,26 @@ namespace Messerli.LinqToRest.Test
             Assert.NotNull(queryProvider);
         }
 
+        [Fact]
+        public void ThrowsWhenHttpClientIsNull()
+        {
+            var builder = new QueryProviderBuilder();
+            builder
+                .HttpClient(null)
+                .Root(RootStub);
+            
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+        }
+
+        [Fact]
+        public void ThrowsWhenRootIsNull()
+        {
+            var builder = new QueryProviderBuilder();
+            builder.Root(null);
+            
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+        }
+        
         private static Uri RootStub => new Uri("https://www.example.com");
     }
 }
