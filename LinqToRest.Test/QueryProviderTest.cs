@@ -84,20 +84,18 @@ namespace Messerli.LinqToRest.Test
 
         private static IQueryable<T> CreateQuery<T>()
         {
-            return new Query<T>(CreateQueryProvider(RootUri));
+            return new QueryableBuilder()
+                .Root(RootUri)
+                .HttpClient(MockHttpClient())
+                .Build<T>();
         }
 
         private static IQueryable<T> CreateQuery<T>(string subPath)
         {
-            return new Query<T>(CreateQueryProvider(new Uri(RootUri, subPath)));
-        }
-
-        private static QueryProviderBase CreateQueryProvider(Uri root)
-        {
-            return new QueryProviderBuilder()
-                .Root(root)
+            return new QueryableBuilder()
+                .Root(new Uri(RootUri, subPath))
                 .HttpClient(MockHttpClient())
-                .Build();
+                .Build<T>();
         }
 
         #endregion
