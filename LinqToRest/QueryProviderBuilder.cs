@@ -26,13 +26,10 @@ namespace Messerli.LinqToRest
         
         public QueryProviderBase Build()
         {
+            ValidateConfiguration();
+            
             var resourceRetriever = CreateResourceRetriever();
             var queryBinderFactory = CreateQueryBinderFactory();
-            
-            if (_uri is null)
-            {
-                throw new QueryProviderBuilderException($"Root uri was not configured. Call .{nameof(Root)}(...) before .{nameof(Build)}().");
-            }
             
             var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
             var queryableFactory = CreateQueryableFactory(resourceRetriever, queryBinderFactory);
@@ -41,6 +38,15 @@ namespace Messerli.LinqToRest
             resourceRetriever.QueryableFactory = queryableFactory;
 
             return queryProvider;
+        }
+
+        private void ValidateConfiguration()
+        {
+            if (_uri is null)
+            {
+                throw new QueryProviderBuilderException(
+                    $"Root uri was not configured. Call .{nameof(Root)}(...) before .{nameof(Build)}().");
+            }
         }
 
         private static QueryableFactory CreateQueryableFactory(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory)
