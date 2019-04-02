@@ -7,7 +7,7 @@ namespace Messerli.LinqToRest.Test
     public class QueryProviderBuilderTest
     {
         [Fact]
-        public void UnconfiguredBuilderReturnsError()
+        public void ThrowsOnUnconfiguredRoot()
         {
             var builder = new QueryProviderBuilder();
             Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
