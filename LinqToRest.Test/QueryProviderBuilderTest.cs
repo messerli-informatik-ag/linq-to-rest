@@ -15,7 +15,7 @@ namespace Messerli.LinqToRest.Test
         }
         
         [Fact]
-        public void ReturnsQueryProvider()
+         public void ReturnsQueryable()
         {
             var builder = new QueryProviderBuilder();
             var queryable = builder
