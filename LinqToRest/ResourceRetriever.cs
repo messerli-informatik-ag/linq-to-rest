@@ -3,6 +3,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
@@ -16,12 +17,13 @@ namespace Messerli.LinqToRest
     public class ResourceRetriever : IResourceRetriever
     {
         private readonly HttpClient _httpClient;
-        private readonly QueryableFactory _queryableFactory;
 
-        public ResourceRetriever(HttpClient httpClient, QueryableFactory queryableFactory)
+        [CanBeNull]
+        public QueryableFactory QueryableFactory{ get; set; }
+
+        public ResourceRetriever(HttpClient httpClient)
         {
             _httpClient = httpClient;
-            _queryableFactory = queryableFactory;
         }
 
         public async Task<T> RetrieveResource<T>(Uri uri)
@@ -108,10 +110,16 @@ namespace Messerli.LinqToRest
             var type = parameter.ParameterType;
 
             return type.IsQueryable()
-                ? _queryableFactory(type.GetInnerType(), uri)
+                ? CreateQueryable(uri, type)
                 : type.IsEnum
                     ? GetEnum(type, token, parameter.Name)
                     : GetField(type, token, parameter.Name);
+        }
+
+        private IQueryable<object> CreateQueryable(Uri root, Type type)
+        {
+            var factory = QueryableFactory ?? throw new NullReferenceException(nameof(QueryableFactory));
+            return factory(type.GetInnerType(), root);
         }
 
         private static object GetEnum(Type type, JToken token, string name)

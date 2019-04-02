@@ -1,6 +1,8 @@
 using System;
+using System.Linq;
 using System.Net.Http;
 using JetBrains.Annotations;
+using Messerli.QueryProvider;
 using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 
 namespace Messerli.LinqToRest
@@ -31,21 +33,22 @@ namespace Messerli.LinqToRest
             {
                 throw new QueryProviderBuilderException($"Root uri was not configured. Call .{nameof(Root)}(...) before .{nameof(Build)}().");
             }
-            return new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
+            
+            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
+            var queryableFactory = CreateQueryableFactory(queryProvider);
+            resourceRetriever.QueryableFactory = queryableFactory;
+
+            return queryProvider;
         }
 
-        private static QueryableFactory CreateQueryableFactory()
+        private static QueryableFactory CreateQueryableFactory(QueryProvider subQueryProvider)
         {
-            return (type, uri) =>
-            {
-                throw new NotImplementedException();
-            };
+            return (type, uri) => Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), subQueryProvider) as IQueryable<object>;
         }
 
         private ResourceRetriever CreateResourceRetriever()
         {
-            var queryableFactory = CreateQueryableFactory();
-            return new ResourceRetriever(_httpClient, queryableFactory);
+            return new ResourceRetriever(_httpClient);
         }
 
         private static QueryBinderFactory CreateQueryBinderFactory()
