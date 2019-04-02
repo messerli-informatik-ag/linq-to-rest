@@ -47,6 +47,12 @@ namespace Messerli.LinqToRest
                 throw new QueryProviderBuilderException(
                     $"Root uri was not configured. Call .{nameof(Root)}(...) before .{nameof(Build)}().");
             }
+
+            if (_httpClient is null)
+            {
+                throw new QueryProviderBuilderException(
+                    $"HTTP client was configured as null. Call .{nameof(HttpClient)}(...) with a non-null value or leave it at its default value"); 
+            }
         }
 
         private static QueryableFactory CreateQueryableFactory(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory)
