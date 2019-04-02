@@ -17,7 +17,9 @@ namespace Messerli.LinqToRest.Test
         public void ReturnsQueryProvider()
         {
             var builder = new QueryProviderBuilder();
-            var queryProvider = builder.Root(new Uri("https://www.example.com")).Build();
+            var queryProvider = builder
+                .Root(new Uri("https://www.example.com"))
+                .Build();
             
             Assert.NotNull(queryProvider);
         } 
