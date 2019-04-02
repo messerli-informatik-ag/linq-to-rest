@@ -3,8 +3,8 @@ using System.Linq;
 using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
-using NSubstitute;
 using Xunit;
+using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 
 namespace Messerli.LinqToRest.Test
 {
@@ -92,9 +92,12 @@ namespace Messerli.LinqToRest.Test
             return new Query<T>(CreateQueryProvider(new Uri(RootUri, subPath)));
         }
 
-        private static QueryProvider CreateQueryProvider(Uri root)
+        private static QueryProviderBase CreateQueryProvider(Uri root)
         {
-            return new QueryProvider(CreateResourceRetriever(), () => new QueryBinder(new EntityValidator()), root);
+            return new QueryProviderBuilder()
+                .Root(root)
+                .HttpClient(MockHttpClient())
+                .Build();
         }
 
         #endregion
@@ -107,21 +110,6 @@ namespace Messerli.LinqToRest.Test
                 .JsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
                 .Build();
-        }
-
-        private static ResourceRetriever CreateResourceRetriever()
-        {
-            return new ResourceRetriever(
-                MockHttpClient(),
-                (type, uri) =>
-                {
-                    var queryProvider = new QueryProvider(
-                        Substitute.For<IResourceRetriever>(),
-                        () => new QueryBinder(new EntityValidator()),
-                        uri);
-
-                    return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
-                });
         }
 
         #endregion
