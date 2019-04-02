@@ -1,10 +1,11 @@
 using System;
+using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 
 namespace Messerli.LinqToRest
 {
     public class QueryProviderBuilder
     {
-        public QueryProvider Build()
+        public QueryProviderBase Build()
         {
             throw new NotImplementedException();
         }
