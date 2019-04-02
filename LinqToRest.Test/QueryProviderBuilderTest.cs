@@ -1,4 +1,5 @@
 using System;
+using Messerli.LinqToRest.Test.Stub;
 using RichardSzalay.MockHttp;
 using Xunit;
 
@@ -10,18 +11,18 @@ namespace Messerli.LinqToRest.Test
         public void ThrowsOnUnconfiguredRoot()
         {
             var builder = new QueryProviderBuilder();
-            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
         
         [Fact]
         public void ReturnsQueryProvider()
         {
             var builder = new QueryProviderBuilder();
-            var queryProvider = builder
+            var queryable = builder
                 .Root(RootStub)
-                .Build();
+                .Build<EntityWithQueryableMember>();
             
-            Assert.NotNull(queryProvider);
+            Assert.NotNull(queryable);
         } 
         
         [Fact]
@@ -29,12 +30,12 @@ namespace Messerli.LinqToRest.Test
         {
             var builder = new QueryProviderBuilder();
             var httpClient = new MockHttpMessageHandler().ToHttpClient();
-            var queryProvider = builder
+            var queryable = builder
                 .HttpClient(httpClient)
                 .Root(RootStub)
-                .Build();
+                .Build<EntityWithQueryableMember>();
             
-            Assert.NotNull(queryProvider);
+            Assert.NotNull(queryable);
         }
 
         [Fact]
@@ -45,7 +46,7 @@ namespace Messerli.LinqToRest.Test
                 .HttpClient(null)
                 .Root(RootStub);
             
-            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
 
         [Fact]
@@ -54,7 +55,7 @@ namespace Messerli.LinqToRest.Test
             var builder = new QueryProviderBuilder();
             builder.Root(null);
             
-            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
         
         private static Uri RootStub => new Uri("https://www.example.com");
