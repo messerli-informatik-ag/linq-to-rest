@@ -1,3 +1,4 @@
+using System;
 using Xunit;
 
 namespace Messerli.LinqToRest.Test
@@ -5,10 +6,19 @@ namespace Messerli.LinqToRest.Test
     public class QueryProviderBuilderTest
     {
         [Fact]
-        public void BuildsQueryProvider()
+        public void UnconfiguredBuilderReturnsError()
         {
             var builder = new QueryProviderBuilder();
-            builder.Build();
+            Assert.Throws<QueryProviderBuilderException>(() => builder.Build());
+        }
+        
+        [Fact]
+        public void ReturnsQueryProvider()
+        {
+            var builder = new QueryProviderBuilder();
+            var queryProvider = builder.Root(new Uri("https://www.example.com")).Build();
+            
+            Assert.NotNull(queryProvider);
         }
     }
 }
