@@ -9,5 +9,5 @@
 ## 0.2.1
 - Add enum support
 
-## TBA
+## 0.3.0
 - Add composition root via `QueryProviderBuilder`
