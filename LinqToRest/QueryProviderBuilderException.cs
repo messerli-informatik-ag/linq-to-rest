@@ -2,7 +2,7 @@ using System;
 
 namespace Messerli.LinqToRest
 {
-    public class QueryProviderBuilderException : Exception
+    public sealed class QueryProviderBuilderException : Exception
     {
         public QueryProviderBuilderException()
         {
