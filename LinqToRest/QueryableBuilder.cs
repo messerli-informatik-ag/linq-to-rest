@@ -82,4 +82,3 @@ namespace Messerli.LinqToRest
         }
     }
 }
->>>>>>> master:LinqToRest/QueryableBuilder.cs
