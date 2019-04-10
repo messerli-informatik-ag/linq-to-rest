@@ -142,7 +142,7 @@ namespace Messerli.LinqToRest.Test
     }
 ]
 ";
-        
+
         private static QueryResult<EntityWithQueryableMember> EntityWithQueryableMemberResult => new QueryResult<EntityWithQueryableMember>(
             EntityWithQueryableMemberRequestUri,
             new[]
