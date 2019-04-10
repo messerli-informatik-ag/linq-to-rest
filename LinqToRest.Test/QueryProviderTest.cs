@@ -177,7 +177,7 @@ namespace Messerli.LinqToRest.Test
                 new EntityWithUriMember("Test1", new Uri("https://www.example.com/1")), 
                 new EntityWithUriMember("Test2", new Uri("https://www.example.com/2")), 
             });
-        
+
         private static Uri UniqueIdentifierNameRequestUri =>
             new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
 
