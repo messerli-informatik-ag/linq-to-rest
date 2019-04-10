@@ -30,7 +30,7 @@ namespace Messerli.LinqToRest.Test.Stub
         {
             if (ReferenceEquals(null, obj)) return false;
             if (ReferenceEquals(this, obj)) return true;
-            return obj.GetType() == GetType() && Equals((EntityWithEnumMember) obj);
+            return obj.GetType() == GetType() && Equals((EntityWithUriMember) obj);
         }
 
         public override int GetHashCode()
