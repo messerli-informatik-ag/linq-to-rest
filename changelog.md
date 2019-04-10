@@ -16,3 +16,7 @@
 - Rename `QueryProviderBuilder` to `QueryableBuilder`
 - Let `QueryableBuilder` return an `IQueryable<T>` directly
 - Provide an interface for `QueryableBuilder`
+
+## TBA
+
+- Add support for deserialization of types that cannot be constructed directly via a cast from `string`
