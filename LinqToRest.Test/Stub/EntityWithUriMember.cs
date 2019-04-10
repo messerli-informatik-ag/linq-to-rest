@@ -23,7 +23,7 @@ namespace Messerli.LinqToRest.Test.Stub
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return string.Equals(Name, other.Name) && Uri == other.Uri;
+            return string.Equals(Name, other.Name) && Uri.Equals(other.Uri);
         }
 
         public override bool Equals(object obj)
