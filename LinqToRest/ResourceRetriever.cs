@@ -151,7 +151,7 @@ namespace Messerli.LinqToRest
                 }
             }
             
-            throw new ArgumentException();
+            throw new ArgumentException($"{type.Name} cannot be constructed from ${token[fieldName]}");
         }
 
         private static bool TryGetValue(JToken token, Type type, string fieldName, out object value)
