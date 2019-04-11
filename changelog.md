@@ -17,5 +17,5 @@
 - Let `QueryableBuilder` return an `IQueryable<T>` directly
 - Provide an interface for `QueryableBuilder`
 
-## TBA
+## 0.4.1
 - Add support for deserialization of types that cannot be constructed directly via a cast from `string`
