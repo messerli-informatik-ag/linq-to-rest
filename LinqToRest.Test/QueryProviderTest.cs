@@ -150,10 +150,8 @@ namespace Messerli.LinqToRest.Test
                 new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
                 new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")),
             });
-
                 
         private static Uri EntityWithUriMemberRequestUri => new Uri(RootUri, "entitywithurimembers");
-
         
         private static string EntityWithUriMemberJson => @"
 [
