@@ -20,7 +20,7 @@ namespace Messerli.LinqToRest.Test
 
             Assert.Equal(expected, actual);
         }
-       
+
         [Fact]
         public void ReturnsRestQueryWithSelect()
         {
