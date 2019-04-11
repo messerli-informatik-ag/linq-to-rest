@@ -133,10 +133,41 @@ namespace Messerli.LinqToRest
         private static object GetField(Type type, JToken token, string name)
         {
             var fieldName = name.CamelCase();
+
+            if (TryGetValue(token, type, fieldName, out var fieldValue))
+            {
+                return fieldValue;
+            } 
+            
+            var constructors = type
+                .GetConstructors()
+                .Where(constructor => constructor.GetParameters().Length == 1);
+
+            foreach (var constructor in constructors)
+            {
+                if (TryGetValue(token, constructor.GetParameters().First().ParameterType, fieldName, out var parameterValue))
+                {
+                    return constructor.Invoke(new[] { parameterValue });
+                }
+            }
+            
+            throw new ArgumentException($"{type.Name} cannot be constructed from ${token[fieldName]}");
+        }
+
+        private static bool TryGetValue(JToken token, Type type, string fieldName, out object value)
+        {
             var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value))
                               ?? throw new MissingMethodException();
-
-            return valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
+            try
+            {
+                value = valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
+                return true;
+            }
+            catch (TargetInvocationException)
+            {
+                value = default(object);
+                return false;
+            }
         }
 
         private async Task<string> GetContent(Uri uri)

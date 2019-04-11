@@ -55,6 +55,17 @@ namespace Messerli.LinqToRest.Test
 
             Assert.Equal(expected, actual);
         }
+        
+        [Fact]
+        public void ReturnsRestObjectWithNonCastableMember()
+        {
+            var actual = new QueryResult<EntityWithUriMember>(
+                CreateQuery<EntityWithUriMember>());
+
+            var expected = EntityWithUriMemberResult;
+
+            Assert.Equal(expected, actual);
+        }
 
         [Fact]
         public void ReturnsRestObjectWithSelect()
@@ -107,6 +118,7 @@ namespace Messerli.LinqToRest.Test
             return new HttpClientMockBuilder()
                 .JsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
+                .JsonResponse(EntityWithUriMemberRequestUri.ToString(), EntityWithUriMemberJson)
                 .Build();
         }
 
@@ -137,6 +149,31 @@ namespace Messerli.LinqToRest.Test
             {
                 new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
                 new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")),
+            });
+                
+        private static Uri EntityWithUriMemberRequestUri => new Uri(RootUri, "entitywithurimembers");
+        
+        private static string EntityWithUriMemberJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""Test1"",
+        ""name"": ""Test1"",
+        ""uri"": ""https://www.example.com/1""
+    },
+    {
+        ""uniqueIdentifier"": ""Test2"",
+        ""name"": ""Test2"",
+        ""uri"": ""https://www.example.com/2""
+    }
+]
+";
+
+        private static QueryResult<EntityWithUriMember> EntityWithUriMemberResult => new QueryResult<EntityWithUriMember>(
+            EntityWithUriMemberRequestUri,
+            new[]
+            {
+                new EntityWithUriMember("Test1", new Uri("https://www.example.com/1")), 
+                new EntityWithUriMember("Test2", new Uri("https://www.example.com/2")), 
             });
 
         private static Uri UniqueIdentifierNameRequestUri =>
