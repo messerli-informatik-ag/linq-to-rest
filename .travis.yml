@@ -10,7 +10,7 @@ env:
     - PATH="$PATH:$HOME/.dotnet/tools"
 
 install:
-  - dotnet tool restore
+  - dotnet tool install -g paket
   - paket install
   - dotnet restore
 
