@@ -2,7 +2,7 @@
 <Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Version>0.4.1</Version>
-    <TargetFramework>netstandard2.0</TargetFramework>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <RootNamespace>Messerli.LinqToRest</RootNamespace>
     <AssemblyName>Messerli.LinqToRest</AssemblyName>
   </PropertyGroup>
