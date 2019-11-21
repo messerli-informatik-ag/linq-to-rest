@@ -3,7 +3,7 @@ framework auto-detect
 source https://www.nuget.org/api/v2
 
 nuget Funcky ~> 1.0
-nuget JetBrains.Annotations ~> 2018.2
+nuget JetBrains.Annotations ~> 2018.2, copy_local: true
 nuget Messerli.Utility ~> 0.2
 nuget Messerli.QueryProvider ~> 0.1
 nuget NSubstitute ~> 4.0
