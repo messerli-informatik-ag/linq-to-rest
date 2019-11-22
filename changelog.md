@@ -20,6 +20,7 @@
 ## 0.4.1
 - Add support for deserialization of types that cannot be constructed directly via a cast from `string`
 
-## Unreleased
+## 0.5.0
 - Update to netstandard2.1.
-
+- Remove unused dependencies
+- Update nuget metadata
