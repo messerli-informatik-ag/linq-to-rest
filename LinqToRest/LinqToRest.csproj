@@ -10,7 +10,6 @@
     <PackageId>Messerli.LinqToRest</PackageId>
     <PackageTags>utility query linq rest</PackageTags>
     <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
-    <Authors>Jan Nils Ferner, Dominic Groth, Thomas Bruderer</Authors>
     <Copyright>© Messerli Informatik AG. All rights reserved.</Copyright>
     <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
   </PropertyGroup>
