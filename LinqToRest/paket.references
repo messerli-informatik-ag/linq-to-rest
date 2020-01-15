@@ -4,3 +4,4 @@ Soltys.ChangeCase
 Messerli.Utility
 Messerli.ServerCommunication
 Messerli.QueryProvider
+Newtonsoft.Json
