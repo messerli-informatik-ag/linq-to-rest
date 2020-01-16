@@ -1,18 +1,19 @@
 dist: bionic
 language: csharp
-dotnet: 3.0.100
+dotnet: "3.1"
 mono: none
 
 env:
   global:
     - DOTNET_SKIP_FIRST_TIME_EXPERIENCE=1
     - DOTNET_CLI_TELEMETRY_OPTOUT=1
+    - PATH="$PATH:$HOME/.dotnet/tools"
 
 install:
   - dotnet tool restore
-  - dotnet paket install
-  - dotnet restore
 
 script:
+ - dotnet paket install
+ - dotnet restore
  - dotnet build
  - dotnet test
