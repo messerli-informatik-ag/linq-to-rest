@@ -24,3 +24,6 @@
 - Update to netstandard2.1.
 - Remove unused dependencies
 - Update nuget metadata
+
+## 0.5.1
+- Add support for .NET Standard 2.0.
