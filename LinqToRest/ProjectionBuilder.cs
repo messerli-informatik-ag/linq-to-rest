@@ -1,4 +1,4 @@
-﻿using Messerli.LinqToRest.Expressions;
+using Messerli.LinqToRest.Expressions;
 using System;
 using System.Linq.Expressions;
 

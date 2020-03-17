@@ -1,4 +1,4 @@
-﻿namespace Messerli.LinqToRest.Test.Stub
+namespace Messerli.LinqToRest.Test.Stub
 {
     public enum TestEnum
     {

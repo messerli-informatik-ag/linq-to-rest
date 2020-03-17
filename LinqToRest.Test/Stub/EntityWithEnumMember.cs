@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using Messerli.LinqToRest.Entities;
 
 namespace Messerli.LinqToRest.Test.Stub

@@ -1,4 +1,4 @@
-﻿namespace Messerli.LinqToRest
+namespace Messerli.LinqToRest
 {
     public abstract class ResourceProjection
     {
