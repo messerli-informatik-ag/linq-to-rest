@@ -13,5 +13,13 @@
         <Copyright>© Messerli Informatik AG. All rights reserved.</Copyright>
         <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
     </PropertyGroup>
-    <Import Project="..\.paket\Paket.Restore.targets" />
+    <ItemGroup>
+        <PackageReference Include="Funcky" />
+        <PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+        <PackageReference Include="Soltys.ChangeCase" />
+        <PackageReference Include="Messerli.Utility" />
+        <PackageReference Include="Messerli.ServerCommunication" />
+        <PackageReference Include="Messerli.QueryProvider" />
+        <PackageReference Include="Newtonsoft.Json" />
+    </ItemGroup>
 </Project>
