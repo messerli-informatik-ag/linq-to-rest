@@ -14,9 +14,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		changelog.md = changelog.md
 		license_apache.txt = license_apache.txt
 		license_mit.txt = license_mit.txt
-		paket.dependencies = paket.dependencies
 		readme.md = readme.md
 	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build Config", "Build Config", "{06A38068-C681-4612-BC58-DFC5D81720BD}"
+				ProjectSection(SolutionItems) = preProject
+								global.json = global.json
+								Packages.props = Packages.props
+				EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
