@@ -1,4 +1,4 @@
-﻿using Messerli.LinqToRest.Declarations;
+using Messerli.LinqToRest.Declarations;
 using System.Collections.ObjectModel;
 using System.Linq.Expressions;
 

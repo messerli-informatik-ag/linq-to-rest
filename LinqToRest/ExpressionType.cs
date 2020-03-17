@@ -1,4 +1,4 @@
-﻿namespace Messerli.LinqToRest
+namespace Messerli.LinqToRest
 {
     internal enum ExpressionType
     {

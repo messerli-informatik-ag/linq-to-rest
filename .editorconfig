@@ -3,7 +3,7 @@ root = true
 
 [*]
 charset = utf-8
-end_of_line = crlf
+end_of_line = lf
 insert_final_newline = true
 indent_style = space
 indent_size = 4
@@ -17,3 +17,4 @@ indent_style = tab
 
 [*.{props,sln,targets}]
 indent_style = tab
+end_of_line = crlf
