@@ -1,17 +1,18 @@
-﻿namespace Messerli.LinqToRest
+﻿using System.Linq;
+
+namespace Messerli.LinqToRest
 {
     internal static class Pluralizer
     {
         public static string Pluralize(string noun)
             // Todo: search NuGet for Pluralisation
-            => noun switch
-            {
-                _ when noun.EndsWithConsonantAndY() => noun[..^1] + "ies",
-                _ => noun + "s",
-            };
+            => noun.EndsWithConsonantAndY()
+                ? noun.Take(noun.Length - 1) + "ies"
+                : noun + "s";
 
         private static bool EndsWithConsonantAndY(this string noun)
-            => noun.EndsWith('y') && noun[^1].IsConsonant();
+            => noun.EndsWith("y") &&
+               noun.Reverse().Skip(1).First().IsConsonant();
 
         private static bool IsConsonant(this char letter)
             => !letter.IsVowel();
