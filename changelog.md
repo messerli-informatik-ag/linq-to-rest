@@ -29,4 +29,4 @@
 - Add support for .NET Standard 2.0.
 
 ## 0.5.2
-- Add static `Pluralizer` with addition functionality for `ies` endings
+- Improve pluralize for nouns ending with `y`.
