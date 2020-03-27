@@ -27,3 +27,6 @@
 
 ## 0.5.1
 - Add support for .NET Standard 2.0.
+
+## 0.5.2
+- Improve pluralize for nouns ending with `y`.
