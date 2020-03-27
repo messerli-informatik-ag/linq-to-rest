@@ -151,10 +151,7 @@ namespace Messerli.LinqToRest
         }
 
         private static string FormatRoute(string route)
-        {
-            // Todo: search NuGet for Pluralisation
-            return route.Split('.').Last().ToLower() + "s";
-        }
+            => Pluralizer.Pluralize(route.Split('.').Last().ToLower());
 
         private void AppendParameterSeparator()
         {
