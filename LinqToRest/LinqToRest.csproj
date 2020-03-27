@@ -1,17 +1,21 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk; Microsoft.Build.CentralPackageVersions">
     <PropertyGroup>
-        <Version>0.5.1</Version>
-        <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
         <RootNamespace>Messerli.LinqToRest</RootNamespace>
         <AssemblyName>Messerli.LinqToRest</AssemblyName>
+    </PropertyGroup>
+    <PropertyGroup>
+        <TargetFrameworks>netstandard2.1;netstandard2.0</TargetFrameworks>
+    </PropertyGroup>
+    <PropertyGroup>
+        <PackageId>Messerli.LinqToRest</PackageId>
+        <Version>0.5.1</Version>
+        <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
         <RepositoryUrl>https://github.com/messerli-informatik-ag/linq-to-rest</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
-        <PackageId>Messerli.LinqToRest</PackageId>
-        <PackageTags>utility query linq rest</PackageTags>
         <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
         <Copyright>© Messerli Informatik AG. All rights reserved.</Copyright>
-        <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
+        <PackageTags>utility query linq rest</PackageTags>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Funcky" />
