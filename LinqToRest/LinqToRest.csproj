@@ -20,6 +20,7 @@
     <ItemGroup>
         <PackageReference Include="Funcky" />
         <PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+        <PackageReference Include="Pluralize.NET.Core" />
         <PackageReference Include="Soltys.ChangeCase" />
         <PackageReference Include="Messerli.Utility" />
         <PackageReference Include="Messerli.ServerCommunication" />

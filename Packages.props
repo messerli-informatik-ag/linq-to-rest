@@ -13,6 +13,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Update="NSubstitute" Version="[4.2.1, 5)" />
+		<PackageReference Update="Pluralize.NET.Core" Version="[1.0, 2)" />
 		<PackageReference Update="RichardSzalay.MockHttp" Version="[5.0, 6)" />
 		<PackageReference Update="Microsoft.NET.Test.Sdk" Version="[15.9.0, 16]" />
 		<PackageReference Update="xunit" Version="[2.4.0, 3)" />
