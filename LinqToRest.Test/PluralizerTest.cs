@@ -2,14 +2,14 @@
 
 namespace Messerli.LinqToRest.Test
 {
-    public class PluralizerTest
+    public sealed class PluralizerTest
     {
         [Theory]
         [MemberData(nameof(GetPluralizeData))]
-        public void PluralizesCorrect(string singular, string plural)
+        public void PluralizesCorrect(string singular, string expectedPlural)
         {
             var result = Pluralizer.Pluralize(singular);
-            Assert.Equal(plural, result);
+            Assert.Equal(expectedPlural, result);
         }
 
 
