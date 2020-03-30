@@ -9,7 +9,7 @@
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>Messerli.LinqToRest</PackageId>
-        <Version>0.5.2</Version>
+        <Version>0.5.3</Version>
         <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
         <RepositoryUrl>https://github.com/messerli-informatik-ag/linq-to-rest</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
@@ -20,6 +20,7 @@
     <ItemGroup>
         <PackageReference Include="Funcky" />
         <PackageReference Include="JetBrains.Annotations" PrivateAssets="all" />
+        <PackageReference Include="Pluralize.NET.Core" />
         <PackageReference Include="Soltys.ChangeCase" />
         <PackageReference Include="Messerli.Utility" />
         <PackageReference Include="Messerli.ServerCommunication" />
