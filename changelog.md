@@ -32,4 +32,4 @@
 - Improve pluralize for nouns ending with `y`.
 
 ## 0.5.3
-- Replace pluralization with `Pluralize.NET.Core` nuget.
+- Replace pluralization with `Pluralize.NET.Core` nuget version 1.0.0.
