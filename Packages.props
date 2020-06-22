@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<ItemGroup>
-		<PackageReference Update="Funcky" Version="[1.5.1, 2)" />
+		<PackageReference Update="Funcky" Version="[2.0.0-rc.2, 3)" />
 		<PackageReference Update="Messerli.QueryProvider" Version="[0.2, 0.3)" />
 		<PackageReference Update="Messerli.ServerCommunication" Version="[0.1, 0.2)" />
 		<PackageReference Update="Messerli.Utility" Version="[0.2.2, 0.3)" />
