@@ -33,12 +33,7 @@ namespace Messerli.LinqToRest
         }
 
         public static T ParseToEnumElement<T>(this string candidate) where T : struct
-        {
-            var parsed = candidate.TryParseEnum<T>();
-
-            return parsed.Match(none: false, some: @enum => true)
-                ? parsed.Match(none: default(T), some: @enum => @enum)
-                : throw new InvalidEnumArgumentException(candidate);
-        }
+            => candidate.TryParseEnum<T>().GetOrElse(
+                   () => throw new InvalidEnumArgumentException(candidate));
     }
 }
