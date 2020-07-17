@@ -1,4 +1,5 @@
 ﻿// from https://raw.githubusercontent.com/dotnet/efcore/master/src/EFCore/Extensions/EntityFrameworkQueryableExtensions.cs
+// edited for our purposes in Line 2587-2591 in this file - we allow not async enumerables to be ToListAsync'd
 
 // Copyright (c) .NET Foundation. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See License.txt in the project root for license information.
