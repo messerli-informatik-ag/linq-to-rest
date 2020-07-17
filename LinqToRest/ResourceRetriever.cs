@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
@@ -26,9 +27,9 @@ namespace Messerli.LinqToRest
             _httpClient = httpClient;
         }
 
-        public async Task<T> RetrieveResource<T>(Uri uri)
+        public async Task<T> RetrieveResource<T>(Uri uri, CancellationToken cancellationToken = default)
         {
-            var content = await GetContent(uri);
+            var content = await GetContent(uri, cancellationToken);
 
             return typeof(T).IsEnumerable()
                 ? DeserializeArray<T>(content, uri)
@@ -137,8 +138,8 @@ namespace Messerli.LinqToRest
             if (TryGetValue(token, type, fieldName, out var fieldValue))
             {
                 return fieldValue;
-            } 
-            
+            }
+
             var constructors = type
                 .GetConstructors()
                 .Where(constructor => constructor.GetParameters().Length == 1);
@@ -150,7 +151,7 @@ namespace Messerli.LinqToRest
                     return constructor.Invoke(new[] { parameterValue });
                 }
             }
-            
+
             throw new ArgumentException($"{type.Name} cannot be constructed from ${token[fieldName]}");
         }
 
@@ -170,9 +171,9 @@ namespace Messerli.LinqToRest
             }
         }
 
-        private async Task<string> GetContent(Uri uri)
+        private async Task<string> GetContent(Uri uri, CancellationToken cancellationToken)
         {
-            var distributionsResponse = await _httpClient.GetAsync(uri);
+            var distributionsResponse = await _httpClient.GetAsync(uri, cancellationToken);
 
             try
             {

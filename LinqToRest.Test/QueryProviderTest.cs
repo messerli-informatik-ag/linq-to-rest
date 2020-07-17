@@ -5,6 +5,7 @@ using Messerli.LinqToRest.Test.Stub;
 using Messerli.QueryProvider;
 using Xunit;
 using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
+using static Messerli.LinqToRest.Test.QueryProviderTestUtility;
 
 namespace Messerli.LinqToRest.Test
 {
@@ -55,7 +56,7 @@ namespace Messerli.LinqToRest.Test
 
             Assert.Equal(expected, actual);
         }
-        
+
         [Fact]
         public void ReturnsRestObjectWithNonCastableMember()
         {
@@ -90,138 +91,5 @@ namespace Messerli.LinqToRest.Test
 
             Assert.Equal(expected, actual);
         }
-
-        #region Helper
-
-        private static IQueryable<T> CreateQuery<T>()
-        {
-            return new QueryableBuilder()
-                .Root(RootUri)
-                .HttpClient(MockHttpClient())
-                .Build<T>();
-        }
-
-        private static IQueryable<T> CreateQuery<T>(string subPath)
-        {
-            return new QueryableBuilder()
-                .Root(new Uri(RootUri, subPath))
-                .HttpClient(MockHttpClient())
-                .Build<T>();
-        }
-
-        #endregion
-
-        #region Mock
-
-        private static HttpClient MockHttpClient()
-        {
-            return new HttpClientMockBuilder()
-                .JsonResponse(UniqueIdentifierNameRequestUri.ToString(), UniqueIdentifierNameJson)
-                .JsonResponse(EntityWithQueryableMemberRequestUri.ToString(), EntityWithQueryableMemberJson)
-                .JsonResponse(EntityWithUriMemberRequestUri.ToString(), EntityWithUriMemberJson)
-                .Build();
-        }
-
-        #endregion
-
-        #region Data
-
-        private static Uri RootUri => new Uri("http://www.example.com/api/v1/", UriKind.Absolute);
-
-        private static Uri EntityWithQueryableMemberRequestUri => new Uri(RootUri, "entitywithqueryablemembers");
-
-        private static string EntityWithQueryableMemberJson => @"
-[
-    {
-        ""uniqueIdentifier"": ""Test1"",
-        ""name"": ""Test1""
-    },
-    {
-        ""uniqueIdentifier"": ""Test2"",
-        ""name"": ""Test2""
-    }
-]
-";
-
-        private static QueryResult<EntityWithQueryableMember> EntityWithQueryableMemberResult => new QueryResult<EntityWithQueryableMember>(
-            EntityWithQueryableMemberRequestUri,
-            new[]
-            {
-                new EntityWithQueryableMember("Test1", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test1/")),
-                new EntityWithQueryableMember("Test2", CreateQuery<EntityWithSimpleMembers>("entitywithqueryablemembers/Test2/")),
-            });
-                
-        private static Uri EntityWithUriMemberRequestUri => new Uri(RootUri, "entitywithurimembers");
-        
-        private static string EntityWithUriMemberJson => @"
-[
-    {
-        ""uniqueIdentifier"": ""Test1"",
-        ""name"": ""Test1"",
-        ""uri"": ""https://www.example.com/1""
-    },
-    {
-        ""uniqueIdentifier"": ""Test2"",
-        ""name"": ""Test2"",
-        ""uri"": ""https://www.example.com/2""
-    }
-]
-";
-
-        private static QueryResult<EntityWithUriMember> EntityWithUriMemberResult => new QueryResult<EntityWithUriMember>(
-            EntityWithUriMemberRequestUri,
-            new[]
-            {
-                new EntityWithUriMember("Test1", new Uri("https://www.example.com/1")), 
-                new EntityWithUriMember("Test2", new Uri("https://www.example.com/2")), 
-            });
-
-        private static Uri UniqueIdentifierNameRequestUri =>
-            new Uri(RootUri, "entitywithqueryablemembers?fields=uniqueIdentifier,name");
-
-        private static string UniqueIdentifierNameJson => @"
-[
-    {
-        ""uniqueIdentifier"": ""Test1"",
-        ""name"": ""Test1""
-    },
-    {
-        ""uniqueIdentifier"": ""Test2"",
-        ""name"": ""Test2""
-    }
-]
-";
-
-        private static QueryResult<object> UniqueIdentifierNameResult => new QueryResult<object>(
-            UniqueIdentifierNameRequestUri,
-            new object[]
-            {
-                new
-                {
-                    UniqueIdentifier = "Test1",
-                    Name = "Test1"
-                },
-                new
-                {
-                    UniqueIdentifier = "Test2",
-                    Name = "Test2"
-                }
-            });
-
-        private static QueryResult<object> NameResult => new QueryResult<object>(
-            UniqueIdentifierNameRequestUri,
-            new object[]
-            {
-                new
-                {
-                    Name = "Test1"
-                },
-                new
-                {
-                    Name = "Test2"
-                }
-            });
-
-        #endregion
     }
 }
