@@ -44,26 +44,24 @@ namespace Messerli.LinqToRest
 
         private static void ValidateThatPropertiesAndParateresMatch(MemberInfo type, IEnumerable<PropertyInfo> properties, IEnumerable<ParameterInfo> parameters)
         {
-            parameters
-                .Zip(properties, (parameter, property) => new { parameter, property })
-                .ForEach(tuple =>
+            foreach (var tuple in parameters.Zip(properties, (parameter, property) => new { parameter, property }))
+            {
+                var propertyName = tuple.property.Name;
+                var expectedName = ChangeCaseExtensions.CamelCase(propertyName);
+                var expectedType = tuple.property.PropertyType;
+                var actualName = tuple.parameter.Name;
+                var actualType = tuple.parameter.ParameterType;
+                if (!(actualType == expectedType && actualName == expectedName))
                 {
-                    var propertyName = tuple.property.Name;
-                    var expectedName = ChangeCaseExtensions.CamelCase(propertyName);
-                    var expectedType = tuple.property.PropertyType;
-                    var actualName = tuple.parameter.Name;
-                    var actualType = tuple.parameter.ParameterType;
-                    if (!(actualType == expectedType && actualName == expectedName))
-                    {
-                        throw new MalformedResourceEntityException
-                        (
-                            $@"Parameter in constructor of type {type.Name} didn't match the its property.
+                    throw new MalformedResourceEntityException
+                    (
+                        $@"Parameter in constructor of type {type.Name} didn't match the its property.
 Expected: {expectedType} {expectedName}
 Which would match property: {expectedType} {propertyName} {{ get; }}
 Actually got: {actualType} {expectedName}"
-                        );
-                    }
-                });
+                    );
+                }
+            }
         }
 
         private static IEnumerable<ParameterInfo> ValidateParameters(MemberInfo type, MethodBase constructorInfo, PropertyInfo[] properties)

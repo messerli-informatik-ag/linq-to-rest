@@ -36,3 +36,6 @@
 
 ## 0.5.4
 - Update to `Funcky` 2.0.0.
+
+## 0.5.5
+- Update `Messerli.Utility` to 0.3.0.
