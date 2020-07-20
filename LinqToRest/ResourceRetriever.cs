@@ -36,14 +36,14 @@ namespace Messerli.LinqToRest
                 : DeserializeObject<T>(content, uri);
         }
 
-        public async Task<object> RetrieveResource(Type type, Uri uri)
+        public async Task<object> RetrieveResource(Type type, Uri uri, CancellationToken cancellationToken = default)
         {
             var method = typeof(ResourceRetriever)
                 .GetMethods()
                 .First(m => m.Name == nameof(RetrieveResource))
                 .MakeGenericMethod(type);
 
-            var task = (Task)method.Invoke(this, new object[] { uri });
+            var task = (Task)method.Invoke(this, new object[] { uri, cancellationToken });
             await task;
             var resultProperty = task.GetType().GetProperty(nameof(Task<object>.Result)) ??
                                  throw new MissingMemberException();
