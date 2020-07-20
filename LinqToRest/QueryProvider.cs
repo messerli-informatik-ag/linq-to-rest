@@ -36,8 +36,7 @@ namespace Messerli.LinqToRest
             var uri = new Uri(result.CommandText);
             var elementType = TypeSystem.GetElementType(expression.Type);
 
-            return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever,
-                uri);
+            return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever, uri);
         }
 
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
