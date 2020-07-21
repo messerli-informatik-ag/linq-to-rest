@@ -15,7 +15,7 @@ namespace Messerli.LinqToRest.Async.Infrastructure
     /// <summary>
     ///     A class that provides reflection metadata for translatable LINQ methods.
     /// </summary>
-    public static class QueryableMethods
+    internal static class QueryableMethods
     {
         /// <summary>
         ///     The <see cref="MethodInfo" /> for <see cref="Queryable.AsQueryable" />
