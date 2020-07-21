@@ -1,5 +1,10 @@
 using System;
+using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
+using System.Threading;
+using System.Threading.Tasks;
+using Messerli.LinqToRest.Async;
 using Messerli.LinqToRest.Expressions;
 using Messerli.QueryProvider;
 
@@ -7,7 +12,7 @@ namespace Messerli.LinqToRest
 {
     public delegate QueryBinder QueryBinderFactory();
 
-    public class QueryProvider : Messerli.QueryProvider.QueryProvider
+    public class QueryProvider : Messerli.QueryProvider.QueryProvider, IAsyncQueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;
@@ -34,6 +39,25 @@ namespace Messerli.LinqToRest
             return Activator.CreateInstance(typeof(ProjectionReader<>).MakeGenericType(elementType), _resourceRetriever, uri);
         }
 
+        public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
+        {
+            // Validate Generic Type is a Task (might need to be adjusted if we need to support ValueTasks as well)
+            if (!IsGenericTaskType(typeof(TResult)))
+            {
+                throw new ArgumentException($"Type is expected to be a generic Task type, but was '{typeof(TResult)}') .");
+            }
+
+            var result = Translate(expression);
+            var uri = new Uri(result.CommandText);
+            var elementType = TypeSystem.GetElementType(expression.Type);
+
+            var methodToExecute = typeof(ResourceRetriever).GetMethods()
+                .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && method.IsGenericMethod)
+                .MakeGenericMethod(elementType);
+
+            return (TResult) methodToExecute.Invoke(_resourceRetriever, new object[] {uri, cancellationToken});
+        }
+
         private TranslateResult Translate(Expression expression)
         {
             expression = Evaluator.PartialEval(expression);
@@ -44,5 +68,7 @@ namespace Messerli.LinqToRest
 
             return new TranslateResult(commandText, projector);
         }
+
+        private static bool IsGenericTaskType(Type type) => type.GetGenericTypeDefinition() == typeof(Task<>);
     }
 }
