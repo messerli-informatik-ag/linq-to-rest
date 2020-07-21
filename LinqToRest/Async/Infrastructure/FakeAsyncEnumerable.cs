@@ -16,7 +16,7 @@ namespace Messerli.LinqToRest.Async.Infrastructure
             _source = source;
         }
 
-        public async IAsyncEnumerator<T> GetAsyncEnumerator([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
         {
             foreach (var item in _source)
             {

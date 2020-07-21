@@ -42,9 +42,9 @@ namespace Messerli.LinqToRest
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
         {
             // Validate Generic Type is a Task (might need to be adjusted if we need to support ValueTasks as well)
-            if (!(typeof(TResult).GetGenericTypeDefinition() == typeof(Task<>)))
+            if (!IsGenericTaskType(typeof(TResult)))
             {
-                throw new ArgumentException("Type is expected to be a generic Task type.");
+                throw new ArgumentException($"Type is expected to be a generic Task type, but was '{typeof(TResult)}') .");
             }
 
             var result = Translate(expression);
@@ -62,11 +62,13 @@ namespace Messerli.LinqToRest
         {
             expression = Evaluator.PartialEval(expression);
             var queryBinder = _queryBinderFactory();
-            var proj = (ProjectionExpression) queryBinder.Bind(expression);
+            var proj = (ProjectionExpression)queryBinder.Bind(expression);
             var commandText = new QueryFormatter(_root).Format(proj.Source);
             var projector = new ProjectionBuilder().Build(proj.Projector);
 
             return new TranslateResult(commandText, projector);
         }
+
+        private static bool IsGenericTaskType(Type type) => type.GetGenericTypeDefinition() == typeof(Task<>);
     }
 }
