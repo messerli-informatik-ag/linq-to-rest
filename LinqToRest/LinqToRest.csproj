@@ -29,9 +29,4 @@
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
     </ItemGroup>
-    <ItemGroup>
-      <EmbeddedResource Update="Async\Resources\CoreStrings.resx">
-        <DependentUpon>CoreStrings.cs</DependentUpon>
-      </EmbeddedResource>
-    </ItemGroup>
 </Project>
