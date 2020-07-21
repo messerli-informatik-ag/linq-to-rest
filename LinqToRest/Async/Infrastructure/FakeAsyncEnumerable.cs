@@ -25,14 +25,8 @@ namespace Messerli.LinqToRest.Async.Infrastructure
             await Task.CompletedTask;
         }
 
-        public IEnumerator<T> GetEnumerator()
-        {
-            return _source.GetEnumerator();
-        }
+        public IEnumerator<T> GetEnumerator() => _source.GetEnumerator();
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
     }
 }
