@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -16,7 +15,9 @@ namespace Messerli.LinqToRest.Async.Infrastructure
             _source = source;
         }
 
-        public async IAsyncEnumerator<T> GetAsyncEnumerator(CancellationToken cancellationToken = default)
+        #pragma warning disable CS8424
+        public async IAsyncEnumerator<T> GetAsyncEnumerator([EnumeratorCancellation] CancellationToken cancellationToken = default)
+        #pragma warning restore
         {
             foreach (var item in _source)
             {
