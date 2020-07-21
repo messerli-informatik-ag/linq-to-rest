@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Messerli.LinqToRest.Async.Infrastructure
 {
-    public class FakeAsyncEnumerable<T> : IAsyncEnumerable<T>, IEnumerable<T>
+    internal class FakeAsyncEnumerable<T> : IAsyncEnumerable<T>, IEnumerable<T>
     {
         private readonly IEnumerable<T> _source;
 

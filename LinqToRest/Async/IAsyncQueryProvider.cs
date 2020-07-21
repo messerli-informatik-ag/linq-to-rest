@@ -18,7 +18,7 @@ namespace Messerli.LinqToRest.Async
     ///         The implementation does not need to be thread-safe.
     ///     </para>
     /// </summary>
-    public interface IAsyncQueryProvider : IQueryProvider
+    internal interface IAsyncQueryProvider : IQueryProvider
     {
         /// <summary>
         ///     Executes the strongly-typed query represented by a specified expression tree asynchronously.

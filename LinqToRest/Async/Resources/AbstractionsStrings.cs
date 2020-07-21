@@ -15,7 +15,7 @@ namespace Messerli.LinqToRest.Async.Resources
     ///         It is unusual for application code to need these strings.
     ///     </para>
     /// </summary>
-    public static class AbstractionsStrings
+    internal static class AbstractionsStrings
     {
         private static readonly ResourceManager _resourceManager
             = new ResourceManager("Messerli.LinqToRest.Async.Resources.AbstractionsStrings", typeof(AbstractionsStrings).Assembly);
