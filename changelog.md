@@ -39,3 +39,6 @@
 
 ## 0.5.5
 - Update `Messerli.Utility` to 0.3.0.
+
+## 0.5.6
+- Provide async interface
