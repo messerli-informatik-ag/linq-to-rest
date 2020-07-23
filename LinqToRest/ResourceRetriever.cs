@@ -29,7 +29,7 @@ namespace Messerli.LinqToRest
 
         public async Task<T> RetrieveResource<T>(Uri uri, CancellationToken cancellationToken = default)
         {
-            var content = await GetContent(uri, cancellationToken);
+            var content = await GetContent(uri, cancellationToken).ConfigureAwait(false);
 
             return typeof(T).IsEnumerable()
                 ? DeserializeArray<T>(content, uri)
@@ -44,7 +44,7 @@ namespace Messerli.LinqToRest
                 .MakeGenericMethod(type);
 
             var task = (Task)method.Invoke(this, new object[] { uri, cancellationToken });
-            await task;
+            await task.ConfigureAwait(false);
             var resultProperty = task.GetType().GetProperty(nameof(Task<object>.Result)) ??
                                  throw new MissingMemberException();
 
@@ -173,7 +173,7 @@ namespace Messerli.LinqToRest
 
         private async Task<string> GetContent(Uri uri, CancellationToken cancellationToken)
         {
-            var distributionsResponse = await _httpClient.GetAsync(uri, cancellationToken);
+            var distributionsResponse = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
 
             try
             {
@@ -184,7 +184,7 @@ namespace Messerli.LinqToRest
                 throw new UnavailableResourceException(uri.ToString(), e);
             }
 
-            return await distributionsResponse.Content.ReadAsStringAsync();
+            return await distributionsResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
     }
 }
