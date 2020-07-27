@@ -41,4 +41,5 @@
 - Update `Messerli.Utility` to 0.3.0.
 
 ## 0.5.6
-- Provide async interface
+- Provide async eager methods for `IQueryable`: `ToListAsync`, `FirstAsync`, `ForEachAsync`, etc.
+  These should be preferred over their synchronous counterparts to prevent deadlocks.
