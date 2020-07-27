@@ -1,6 +1,5 @@
 using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
-using Messerli.Utility.Extension;
 using Soltys.ChangeCase;
 using System;
 using System.Collections.Generic;
