@@ -173,18 +173,18 @@ namespace Messerli.LinqToRest
 
         private async Task<string> GetContent(Uri uri, CancellationToken cancellationToken)
         {
-            var distributionsResponse = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
+            var response = await _httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false);
 
             try
             {
-                distributionsResponse.EnsureSuccessStatusCode();
+                response.EnsureSuccessStatusCode();
             }
             catch (HttpRequestException e)
             {
                 throw new UnavailableResourceException(uri.ToString(), e);
             }
 
-            return await distributionsResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
         }
     }
 }
