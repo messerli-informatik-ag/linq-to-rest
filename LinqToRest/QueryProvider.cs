@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
@@ -51,12 +52,12 @@ namespace Messerli.LinqToRest
             var result = Translate(expression);
             var uri = new Uri(result.CommandText);
             var elementType = TypeSystem.GetElementType(expression.Type);
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(elementType);
 
             var methodToExecute = typeof(ResourceRetriever).GetMethods()
-                .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && method.IsGenericMethod)
-                .MakeGenericMethod(elementType);
+                .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && !method.IsGenericMethod);
 
-            return (TResult) methodToExecute.Invoke(_resourceRetriever, new object[] {uri, cancellationToken});
+            return (TResult)methodToExecute.Invoke(_resourceRetriever, new object[] { enumerableType, uri, cancellationToken});
         }
 
         // Copied from https://github.com/messerli-informatik-ag/query-provider/blob/master/QueryProvider/QueryProvider.cs
