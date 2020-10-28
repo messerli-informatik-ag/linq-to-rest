@@ -30,7 +30,7 @@ namespace Messerli.LinqToRest
             return Translate(expression).CommandText;
         }
 
-        public TResult Execute<TResult>(Expression expression) => (TResult) Execute(expression);
+        public TResult Execute<TResult>(Expression expression) => (TResult)Execute(expression);
 
         public object Execute(Expression expression)
         {
@@ -69,7 +69,7 @@ namespace Messerli.LinqToRest
             var elementType = TypeSystem.GetElementType(expression.Type);
             try
             {
-                return (IQueryable) Activator.CreateInstance(typeof (Query<>).MakeGenericType(elementType), (object) this, (object) expression);
+                return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), (object)this, (object)expression);
             }
             catch (TargetInvocationException ex)
             {
