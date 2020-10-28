@@ -1,9 +1,10 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Messerli.LinqToRest.Async;
 using Messerli.LinqToRest.Expressions;
 using Messerli.QueryProvider;
 
@@ -11,7 +12,7 @@ namespace Messerli.LinqToRest
 {
     public delegate QueryBinder QueryBinderFactory();
 
-    public class QueryProvider : Messerli.QueryProvider.QueryProvider, IAsyncQueryProvider
+    public class QueryProvider : IStringifyableQueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;
@@ -24,12 +25,14 @@ namespace Messerli.LinqToRest
             _root = root;
         }
 
-        public override string GetQueryText(Expression expression)
+        public string GetQueryText(Expression expression)
         {
             return Translate(expression).CommandText;
         }
 
-        public override object Execute(Expression expression)
+        public TResult Execute<TResult>(Expression expression) => (TResult)Execute(expression);
+
+        public object Execute(Expression expression)
         {
             var result = Translate(expression);
             var uri = new Uri(result.CommandText);
@@ -49,12 +52,29 @@ namespace Messerli.LinqToRest
             var result = Translate(expression);
             var uri = new Uri(result.CommandText);
             var elementType = TypeSystem.GetElementType(expression.Type);
+            var enumerableType = typeof(IEnumerable<>).MakeGenericType(elementType);
 
             var methodToExecute = typeof(ResourceRetriever).GetMethods()
-                .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && method.IsGenericMethod)
-                .MakeGenericMethod(elementType);
+                .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && !method.IsGenericMethod);
 
-            return (TResult) methodToExecute.Invoke(_resourceRetriever, new object[] {uri, cancellationToken});
+            return (TResult)methodToExecute.Invoke(_resourceRetriever, new object[] { enumerableType, uri, cancellationToken});
+        }
+
+        // Copied from https://github.com/messerli-informatik-ag/query-provider/blob/master/QueryProvider/QueryProvider.cs
+        public IQueryable<TElement> CreateQuery<TElement>(Expression expression) => new Query<TElement>(this, expression);
+
+        // Copied from https://github.com/messerli-informatik-ag/query-provider/blob/master/QueryProvider/QueryProvider.cs
+        public IQueryable CreateQuery(Expression expression)
+        {
+            var elementType = TypeSystem.GetElementType(expression.Type);
+            try
+            {
+                return (IQueryable)Activator.CreateInstance(typeof(Query<>).MakeGenericType(elementType), (object)this, (object)expression);
+            }
+            catch (TargetInvocationException ex)
+            {
+                throw ex.InnerException;
+            }
         }
 
         private TranslateResult Translate(Expression expression)

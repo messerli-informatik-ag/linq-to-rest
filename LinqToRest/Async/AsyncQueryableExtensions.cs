@@ -2584,13 +2584,8 @@ namespace Messerli.LinqToRest.Async
             {
                 return asyncEnumerable;
             }
-            // We don't need the single enumerator steps to be async, synchronous enumeration is valid too.
-            else
-            {
-                return new FakeAsyncEnumerable<TSource>(source);
-            }
 
-            // throw new InvalidOperationException(CoreStrings.IQueryableNotAsync(typeof(TSource)));
+            throw new InvalidOperationException(CoreStrings.IQueryableNotAsync(typeof(TSource)));
         }
 
         #endregion
