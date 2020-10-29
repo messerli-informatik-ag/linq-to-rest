@@ -44,3 +44,6 @@
 - Provide async eager methods for `IQueryable`: `ToListAsync`, `FirstAsync`, `ForEachAsync`, etc.
   These should be preferred over their synchronous counterparts to prevent deadlocks.
 - Prevent deadlocks via `ConfigureAwait(false)`
+
+## 0.6.0
+- Implement `IAsyncEnumerable<T>` on Query
