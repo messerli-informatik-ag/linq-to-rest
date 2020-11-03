@@ -47,3 +47,6 @@
 
 ## 0.6.0
 - Implement `IAsyncEnumerable<T>` on Query
+
+## Unreleased
+* Throw `Messerli.LinqToRest.UnavailableResourceException` instead of `Messerli.ServerCommunication.UnavailableResourceException`.
