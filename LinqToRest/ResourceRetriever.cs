@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
-using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
 using Newtonsoft.Json.Linq;
 using Soltys.ChangeCase;

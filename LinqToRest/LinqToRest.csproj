@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk; Microsoft.Build.CentralPackageVersions">
     <PropertyGroup>
         <RootNamespace>Messerli.LinqToRest</RootNamespace>
@@ -24,7 +24,6 @@
         <PackageReference Include="Pluralize.NET.Core" />
         <PackageReference Include="Soltys.ChangeCase" />
         <PackageReference Include="Messerli.Utility" />
-        <PackageReference Include="Messerli.ServerCommunication" />
         <PackageReference Include="Messerli.QueryProvider" />
         <PackageReference Include="Newtonsoft.Json" />
         <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Condition="'$(TargetFramework)' == 'netstandard2.0'" />
