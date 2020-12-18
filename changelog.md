@@ -47,3 +47,6 @@
 
 ## 0.6.0
 - Implement `IAsyncEnumerable<T>` on Query
+
+## 0.6.1
+- Fix usage of relative base urls
