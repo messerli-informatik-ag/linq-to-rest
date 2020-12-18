@@ -50,3 +50,4 @@
 
 ## 0.6.1
 - Fix relative urls mistakenly being converted to absolute urls
+- Publish symbols package
