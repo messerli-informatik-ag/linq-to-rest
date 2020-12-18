@@ -50,7 +50,7 @@ namespace Messerli.LinqToRest
             }
 
             var result = Translate(expression);
-            var uri = new Uri(result.CommandText);
+            var uri = new Uri(result.CommandText, _root.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
             var elementType = TypeSystem.GetElementType(expression.Type);
             var enumerableType = typeof(IEnumerable<>).MakeGenericType(elementType);
 
