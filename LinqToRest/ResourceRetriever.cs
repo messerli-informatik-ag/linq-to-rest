@@ -131,7 +131,7 @@ namespace Messerli.LinqToRest
         private static object GetEnum(Type type, JToken token, string name)
         {
             var candidate = GetField(typeof(string), token, name) as string
-                            ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
+                ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
 
             return candidate.ParseToEnumElement(type);
         }
