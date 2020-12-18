@@ -49,4 +49,4 @@
 - Implement `IAsyncEnumerable<T>` on Query
 
 ## 0.6.1
-- Fix usage of relative base urls
+- Fix relative urls mistakenly being converted to absolute urls
