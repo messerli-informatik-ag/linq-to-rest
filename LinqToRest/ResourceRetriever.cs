@@ -20,7 +20,7 @@ namespace Messerli.LinqToRest
         private readonly HttpClient _httpClient;
 
         [CanBeNull]
-        public QueryableFactory QueryableFactory{ get; set; }
+        public QueryableFactory QueryableFactory { get; set; }
 
         public ResourceRetriever(HttpClient httpClient)
         {
@@ -65,14 +65,14 @@ namespace Messerli.LinqToRest
             var type = typeof(T).GetInnerType();
             var deserialized = jsonArray.Select(token => Deserialize(type, token, uri)).ToArray();
             var castMethod = typeof(Enumerable)
-                                 .GetMethod(nameof(Enumerable.Cast)) ?? throw new MissingMethodException();
+                .GetMethod(nameof(Enumerable.Cast)) ?? throw new MissingMethodException();
 
             var castArray = (T)castMethod
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { deserialized });
 
             var toArrayMethod = typeof(Enumerable)
-                                    .GetMethod(nameof(Enumerable.ToArray)) ?? throw new MissingMethodException();
+                .GetMethod(nameof(Enumerable.ToArray)) ?? throw new MissingMethodException();
             return (T)toArrayMethod
                 .MakeGenericMethod(type)
                 .Invoke(null, new object[] { castArray });
@@ -131,7 +131,7 @@ namespace Messerli.LinqToRest
         private static object GetEnum(Type type, JToken token, string name)
         {
             var candidate = GetField(typeof(string), token, name) as string
-                ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
+                            ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
 
             return candidate.ParseToEnumElement(type);
         }
@@ -162,8 +162,7 @@ namespace Messerli.LinqToRest
 
         private static bool TryGetValue(JToken token, Type type, string fieldName, out object value)
         {
-            var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value))
-                              ?? throw new MissingMethodException();
+            var valueMethod = typeof(JToken).GetMethod(nameof(JToken.Value)) ?? throw new MissingMethodException();
             try
             {
                 value = valueMethod.MakeGenericMethod(type).Invoke(token, new object[] { fieldName });
@@ -171,7 +170,7 @@ namespace Messerli.LinqToRest
             }
             catch (TargetInvocationException)
             {
-                value = default(object);
+                value = default;
                 return false;
             }
         }
