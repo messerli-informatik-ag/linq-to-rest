@@ -98,12 +98,17 @@ namespace Messerli.LinqToRest
         {
             var uniqueIdentifier = GetField(typeof(string), token, nameof(IEntity.UniqueIdentifier));
 
-            // Todo: Use UriBuilder once it's out of Messerli.Update
-            // See <https://github.com/messerli-informatik-ag/server-communication/issues/4>
-            var path = root.GetLeftPart(UriPartial.Path) + "/";
-            var pathUri = new Uri(path, UriKind.Absolute);
-            var resourceUri = new Uri(pathUri, uniqueIdentifier + "/");
-            return resourceUri;
+            if (root.IsAbsoluteUri)
+            {
+                var path = root.GetLeftPart(UriPartial.Path) + "/";
+                var pathUri = new Uri(path, UriKind.Absolute);
+                return new Uri(pathUri, uniqueIdentifier + "/");
+            }
+
+            static string CombineUrl(string uri1, string uri2)
+                => $"{uri1.TrimEnd('/')}/{uri2.TrimStart('/')}";
+
+            return new Uri(CombineUrl(root.ToString(), uniqueIdentifier + "/"), UriKind.Relative);
         }
 
         private object GetDeserializedParameter(ParameterInfo parameter, JToken token, Uri uri)
