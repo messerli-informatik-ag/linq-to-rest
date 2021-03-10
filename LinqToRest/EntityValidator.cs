@@ -54,7 +54,7 @@ namespace Messerli.LinqToRest
                 {
                     throw new MalformedResourceEntityException
                     (
-                        $@"Parameter in constructor of type {type.Name} didn't match the its property.
+                        $@"Parameter in constructor of type {type.Name} didn't match the property.
 Expected: {expectedType} {expectedName}
 Which would match property: {expectedType} {propertyName} {{ get; }}
 Actually got: {actualType} {expectedName}"
