@@ -66,7 +66,11 @@ Actually got: {actualType} {expectedName}"
         private static IEnumerable<ParameterInfo> ValidateParameters(MemberInfo type, MethodBase constructorInfo, PropertyInfo[] properties)
         {
             var parameters = constructorInfo.GetParameters();
-            var implementedProperties = typeof(IEntity).GetProperties().Length;
+            var implementedProperties = typeof(IEntity)
+                .GetProperties()
+                .Select(p => p.Name)
+                .Count(p => parameters.Select(p => p.Name).Contains(p));
+
             if (parameters.Length != properties.Length - implementedProperties)
             {
                 throw new MalformedResourceEntityException
