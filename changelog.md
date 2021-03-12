@@ -51,3 +51,6 @@
 ## 0.6.1
 - Fix relative urls mistakenly being converted to absolute urls
 - Publish symbols package
+
+## 0.6.2
+- Fix validation for injected properties

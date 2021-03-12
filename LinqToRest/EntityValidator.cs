@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Funcky.Extensions;
 
 namespace Messerli.LinqToRest
 {
@@ -54,7 +55,7 @@ namespace Messerli.LinqToRest
                 {
                     throw new MalformedResourceEntityException
                     (
-                        $@"Parameter in constructor of type {type.Name} didn't match the its property.
+                        $@"Parameter in constructor of type {type.Name} didn't match the property.
 Expected: {expectedType} {expectedName}
 Which would match property: {expectedType} {propertyName} {{ get; }}
 Actually got: {actualType} {expectedName}"
@@ -65,19 +66,24 @@ Actually got: {actualType} {expectedName}"
 
         private static IEnumerable<ParameterInfo> ValidateParameters(MemberInfo type, MethodBase constructorInfo, PropertyInfo[] properties)
         {
-            var parameters = constructorInfo.GetParameters();
-            var implementedProperties = typeof(IEntity).GetProperties().Length;
-            if (parameters.Length != properties.Length - implementedProperties)
+            var constructorArguments = constructorInfo.GetParameters();
+            var nonInjectedIEntityProperties = typeof(IEntity)
+                .GetProperties()
+                .Count(property => !constructorArguments
+                    .Select(argument => argument.Name)
+                    .Contains(property.Name, StringComparer.InvariantCultureIgnoreCase));
+
+            if (constructorArguments.Length != properties.Length - nonInjectedIEntityProperties)
             {
                 throw new MalformedResourceEntityException
                 (
                     $@"Type {type.Name} has a different amount of parameters than properties.
-Parameters: {parameters}
+Parameters: {constructorArguments}
 Properties: {properties}"
                 );
             }
 
-            return parameters;
+            return constructorArguments;
         }
 
         private static PropertyInfo[] ValidateProperties(Type type)
