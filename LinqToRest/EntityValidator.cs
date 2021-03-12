@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Funcky.Extensions;
 
 namespace Messerli.LinqToRest
 {
@@ -65,23 +66,24 @@ Actually got: {actualType} {expectedName}"
 
         private static IEnumerable<ParameterInfo> ValidateParameters(MemberInfo type, MethodBase constructorInfo, PropertyInfo[] properties)
         {
-            var parameters = constructorInfo.GetParameters();
-            var implementedProperties = typeof(IEntity)
+            var constructorArguments = constructorInfo.GetParameters();
+            var nonInjectedIEntityProperties = typeof(IEntity)
                 .GetProperties()
-                .Select(p => p.Name)
-                .Count(p => parameters.Select(p => p.Name).Contains(p));
+                .Count(property => !constructorArguments
+                    .Select(argument => argument.Name)
+                    .Contains(property.Name, StringComparer.InvariantCultureIgnoreCase));
 
-            if (parameters.Length != properties.Length - implementedProperties)
+            if (constructorArguments.Length != properties.Length - nonInjectedIEntityProperties)
             {
                 throw new MalformedResourceEntityException
                 (
                     $@"Type {type.Name} has a different amount of parameters than properties.
-Parameters: {parameters}
+Parameters: {constructorArguments}
 Properties: {properties}"
                 );
             }
 
-            return parameters;
+            return constructorArguments;
         }
 
         private static PropertyInfo[] ValidateProperties(Type type)
