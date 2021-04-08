@@ -2,8 +2,6 @@ using System;
 using System.Linq;
 using System.Net.Http;
 using JetBrains.Annotations;
-using Messerli.QueryProvider;
-using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 
 namespace Messerli.LinqToRest
 {
@@ -17,23 +15,23 @@ namespace Messerli.LinqToRest
             _uri = uri;
             return this;
         }
-        
+
         public IQueryableBuilder HttpClient(HttpClient httpClient)
         {
             _httpClient = httpClient;
             return this;
         }
-        
+
         public IQueryable<T> Build<T>()
         {
             ValidateConfiguration();
-            
+
             var resourceRetriever = CreateResourceRetriever();
             var queryBinderFactory = CreateQueryBinderFactory();
-            
+
             var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
             var queryableFactory = CreateQueryableFactory(resourceRetriever, queryBinderFactory);
-            
+
             // Resolve circular dependency
             resourceRetriever.QueryableFactory = queryableFactory;
 
@@ -51,7 +49,7 @@ namespace Messerli.LinqToRest
             if (_httpClient is null)
             {
                 throw new QueryableBuilderException(
-                    $"HTTP client was configured as null. Call .{nameof(HttpClient)}(...) with a non-null value or leave it at its default value"); 
+                    $"HTTP client was configured as null. Call .{nameof(HttpClient)}(...) with a non-null value or leave it at its default value");
             }
         }
 
