@@ -10,13 +10,15 @@
     </PropertyGroup>
     <PropertyGroup>
         <PackageId>Messerli.LinqToRest</PackageId>
-        <Version>0.6.0</Version>
+        <Version>0.6.3</Version>
         <Description>A LINQ QueryProvider that uses a REST API as its data source.</Description>
         <RepositoryUrl>https://github.com/messerli-informatik-ag/linq-to-rest</RepositoryUrl>
         <RepositoryType>git</RepositoryType>
         <PackageLicenseExpression>MIT OR Apache-2.0</PackageLicenseExpression>
         <Copyright>© Messerli Informatik AG. All rights reserved.</Copyright>
         <PackageTags>utility query linq rest</PackageTags>
+        <IncludeSymbols>true</IncludeSymbols>
+        <SymbolPackageFormat>snupkg</SymbolPackageFormat>
     </PropertyGroup>
     <ItemGroup>
         <PackageReference Include="Funcky" />

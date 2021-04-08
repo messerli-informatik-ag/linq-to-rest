@@ -48,5 +48,13 @@
 ## 0.6.0
 - Implement `IAsyncEnumerable<T>` on Query
 
-## Unreleased
-* Throw `Messerli.LinqToRest.UnavailableResourceException` instead of `Messerli.ServerCommunication.UnavailableResourceException`.
+## 0.6.1
+- Fix relative urls mistakenly being converted to absolute urls
+- Publish symbols package
+
+## 0.6.2
+- Fix validation for injected properties
+
+## 0.6.3
+- Fix deserialization of date(-time) strings to string or string new types.
+- Throw `Messerli.LinqToRest.UnavailableResourceException` instead of `Messerli.ServerCommunication.UnavailableResourceException`.

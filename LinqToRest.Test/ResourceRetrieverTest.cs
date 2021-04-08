@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.Linq;
 using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
-using Messerli.QueryProvider;
 using NSubstitute;
 using Xunit;
 
@@ -88,6 +87,19 @@ namespace Messerli.LinqToRest.Test
             Assert.Equal(expected, actual);
         }
 
+        [Fact]
+        public async void ReturnsRestObjectWithDateString()
+        {
+            var resourceRetriever = CreateResourceRetriever();
+
+            var uri = new Uri(DateStringResult.Query, UriKind.Absolute);
+            var type = typeof(IEnumerable<>).MakeGenericType(new { Date = default(StringNewType) }.GetType());
+
+            var actual = await resourceRetriever.RetrieveResource(type, uri);
+            var expected = DateStringResult.Object;
+
+            Assert.Equal(expected[0], ((IEnumerable<object>)actual).First());
+        }
 
         [Fact]
         public async System.Threading.Tasks.Task ThrowOnInvalidEnumValue()
@@ -112,7 +124,7 @@ namespace Messerli.LinqToRest.Test
                         uri);
 
                     return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
-                }
+                },
             };
         }
 
@@ -124,6 +136,7 @@ namespace Messerli.LinqToRest.Test
                 .JsonResponse(UniqueIdentifierNameNumberRequestUri, UniqueIdentifierNameNumberJson)
                 .JsonResponse(EntityWithQueryableMemberRequestUri, EntityWithQueryableMemberJson)
                 .JsonResponse(EnumRequestUri, EntityWithEnumMemberJson)
+                .JsonResponse(DateRequestUri, EntityWithDateStringJson)
                 .JsonResponse(InvalidEnumRequestUri, InvalidEnumJson)
                 .Build();
         }
@@ -205,7 +218,7 @@ namespace Messerli.LinqToRest.Test
         private static string UniqueIdentifierNameNumberRequestUri =>
             $"{RootUri}entitywithqueryablemembers?fields=uniqueIdentifier,name,number";
 
-        private static QueryResult<object> NameNumberResult => new QueryResult<object>(
+        private static QueryResult<object> NameNumberResult => new(
             new Uri(UniqueIdentifierNameNumberRequestUri),
             new object[]
             {
@@ -284,6 +297,24 @@ namespace Messerli.LinqToRest.Test
                 new { Enum = TestEnum.Three }
             });
 
+        private static string DateRequestUri => $"{RootUri}entitywithdatemembers";
+
+        private static string EntityWithDateStringJson => @"
+[
+    {
+        ""uniqueIdentifier"": ""One"",
+        ""date"": ""2021-01-03T09:45:12""
+    },
+]
+";
+
+        private static QueryResult<object> DateStringResult => new(
+            new Uri(DateRequestUri),
+            new object[]
+            {
+                new { Date = new StringNewType("2021-01-03T09:45:12") },
+            });
+
         private static string InvalidEnumRequestUri => $"{RootUri}invaludenummembers";
 
         private static string InvalidEnumJson => @"
@@ -296,5 +327,17 @@ namespace Messerli.LinqToRest.Test
 ";
 
         #endregion
+
+        private sealed record StringNewType
+        {
+            public StringNewType(string value)
+            {
+                Value = value;
+            }
+
+            public string Value { get; }
+
+            public override string ToString() => $"{nameof(StringNewType)}({Value})";
+        }
     }
 }
