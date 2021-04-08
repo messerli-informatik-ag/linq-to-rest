@@ -57,3 +57,4 @@
 
 ## 0.6.3
 - Fix deserialization of date(-time) strings to string or string new types.
+- Throw `Messerli.LinqToRest.UnavailableResourceException` instead of `Messerli.ServerCommunication.UnavailableResourceException`.

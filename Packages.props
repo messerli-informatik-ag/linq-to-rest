@@ -3,7 +3,6 @@
 	<ItemGroup>
 		<PackageReference Update="Funcky" Version="[2.0.0, 3)" />
 		<PackageReference Update="Messerli.QueryProvider" Version="[0.2, 0.3)" />
-		<PackageReference Update="Messerli.ServerCommunication" Version="[0.1, 0.2)" />
 		<PackageReference Update="Messerli.Utility" Version="[0.3.0, 0.4)" />
 		<PackageReference Update="Newtonsoft.Json" Version="[12.0.3, 13)" />
 		<PackageReference Update="Soltys.ChangeCase" Version="[1.6, 2)" />
