@@ -5,7 +5,7 @@
         <IsPackable>false</IsPackable>
         <RootNamespace>Messerli.LinqToRest.Test</RootNamespace>
         <AssemblyName>Messerli.LinqToRest.Test</AssemblyName>
-        <LangVersion>8.0</LangVersion>
+        <LangVersion>9.0</LangVersion>
     </PropertyGroup>
     <ItemGroup>
         <ProjectReference Include="..\LinqToRest\LinqToRest.csproj" />
