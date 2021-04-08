@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Reflection;
@@ -8,6 +9,7 @@ using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
 using Messerli.ServerCommunication;
 using Messerli.Utility.Extension;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using Soltys.ChangeCase;
 
@@ -53,14 +55,13 @@ namespace Messerli.LinqToRest
 
         private T DeserializeObject<T>(string content, Uri uri)
         {
-            var jsonObject = JObject.Parse(content);
-
+            var jsonObject = Parse(content, JObject.Load);
             return (T)Deserialize(typeof(T), jsonObject, uri);
         }
 
         private T DeserializeArray<T>(string content, Uri uri)
         {
-            var jsonArray = JArray.Parse(content);
+            var jsonArray = Parse(content, JArray.Load);
 
             var type = typeof(T).GetInnerType();
             var deserialized = jsonArray.Select(token => Deserialize(type, token, uri)).ToArray();
@@ -189,6 +190,13 @@ namespace Messerli.LinqToRest
             }
 
             return await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+        }
+
+        private static TJToken Parse<TJToken>(string json, Func<JsonReader, TJToken> loadFunc)
+        {
+            using var stringReader = new StringReader(json);
+            using var reader = new JsonTextReader(stringReader) { DateParseHandling = DateParseHandling.None };
+            return loadFunc(reader);
         }
     }
 }

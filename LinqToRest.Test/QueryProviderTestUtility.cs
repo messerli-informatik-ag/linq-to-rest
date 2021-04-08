@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
-using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 
 namespace Messerli.LinqToRest.Test
 {

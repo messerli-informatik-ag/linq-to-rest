@@ -54,3 +54,6 @@
 
 ## 0.6.2
 - Fix validation for injected properties
+
+## 0.6.3
+- Fix deserialization of date(-time) strings to string or string new types.

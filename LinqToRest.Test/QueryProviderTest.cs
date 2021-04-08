@@ -1,10 +1,6 @@
-using System;
 using System.Linq;
-using System.Net.Http;
 using Messerli.LinqToRest.Test.Stub;
-using Messerli.QueryProvider;
 using Xunit;
-using QueryProviderBase = Messerli.QueryProvider.QueryProvider;
 using static Messerli.LinqToRest.Test.QueryProviderTestUtility;
 
 namespace Messerli.LinqToRest.Test
