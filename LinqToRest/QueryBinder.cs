@@ -1,12 +1,12 @@
 using Messerli.LinqToRest.Declarations;
 using Messerli.LinqToRest.Entities;
 using Messerli.LinqToRest.Expressions;
-using Soltys.ChangeCase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
+using Messerli.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -152,7 +152,7 @@ namespace Messerli.LinqToRest
                     var matchingArgument = newExpression
                         .Constructor
                         .GetParameters()
-                        .Select(p => p.Name.PascalCase())
+                        .Select(p => p.Name.ToPascalCase())
                         .Zip(newExpression.Arguments, (argument, parameter) => new { argument, parameter })
                         .FirstOrDefault(type => type.argument == member.Member.Name)?
                         .parameter;
@@ -164,7 +164,7 @@ namespace Messerli.LinqToRest
 
                     if (member.Member.Name == nameof(IEntity.UniqueIdentifier))
                     {
-                        return new FieldExpression(typeof(string), nameof(IEntity.UniqueIdentifier).CamelCase(), new FieldDeclaration[0]);
+                        return new FieldExpression(typeof(string), nameof(IEntity.UniqueIdentifier).ToCamelCase(), new FieldDeclaration[0]);
                     }
 
                     break;

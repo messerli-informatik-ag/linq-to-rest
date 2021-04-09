@@ -121,7 +121,8 @@ namespace Messerli.LinqToRest.Test
                     var queryProvider = new QueryProvider(
                         Substitute.For<IResourceRetriever>(),
                         () => new QueryBinder(new EntityValidator()),
-                        uri);
+                        uri,
+                        NamingPolicy.LowerCasePlural);
 
                     return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), queryProvider) as IQueryable<object>;
                 },
@@ -189,7 +190,7 @@ namespace Messerli.LinqToRest.Test
 
         private static QueryProvider CreateQueryProvider(Uri root)
         {
-            return new QueryProvider(CreateResourceRetriever(), () => new QueryBinder(new EntityValidator()), root);
+            return new QueryProvider(CreateResourceRetriever(), () => new QueryBinder(new EntityValidator()), root, NamingPolicy.LowerCasePlural);
         }
 
         private static IQueryable<T> CreateQuery<T>(string subPath)

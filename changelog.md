@@ -58,3 +58,11 @@
 ## 0.6.3
 - Fix deserialization of date(-time) strings to string or string new types.
 - Throw `Messerli.LinqToRest.UnavailableResourceException` instead of `Messerli.ServerCommunication.UnavailableResourceException`.
+
+## 0.6.4
+- Allow configuration of the naming policy for resource uris:
+  ```csharp
+  var queryable = new QueryableBuilder()
+      .ResourceNamingPolicy(KebabCasePlural.Plural)
+      .Build();
+  ```

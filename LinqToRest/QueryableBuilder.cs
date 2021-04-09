@@ -8,6 +8,7 @@ namespace Messerli.LinqToRest
     public class QueryableBuilder: IQueryableBuilder
     {
         private HttpClient _httpClient = new HttpClient();
+        private INamingPolicy _resourceNamingPolicy = NamingPolicy.LowerCasePlural;
         [CanBeNull] private Uri _uri;
 
         public IQueryableBuilder Root(Uri uri)
@@ -22,6 +23,12 @@ namespace Messerli.LinqToRest
             return this;
         }
 
+        public IQueryableBuilder ResourceNamingPolicy(INamingPolicy namingPolicy)
+        {
+            _resourceNamingPolicy = namingPolicy;
+            return this;
+        }
+
         public IQueryable<T> Build<T>()
         {
             ValidateConfiguration();
@@ -29,7 +36,7 @@ namespace Messerli.LinqToRest
             var resourceRetriever = CreateResourceRetriever();
             var queryBinderFactory = CreateQueryBinderFactory();
 
-            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri);
+            var queryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, _uri, _resourceNamingPolicy);
             var queryableFactory = CreateQueryableFactory(resourceRetriever, queryBinderFactory);
 
             // Resolve circular dependency
@@ -53,30 +60,24 @@ namespace Messerli.LinqToRest
             }
         }
 
-        private static QueryableFactory CreateQueryableFactory(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory)
+        private QueryableFactory CreateQueryableFactory(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory)
         {
             return (type, uri) =>
             {
-                var subQueryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, uri);
+                var subQueryProvider = new QueryProvider(resourceRetriever, queryBinderFactory, uri, _resourceNamingPolicy);
                 return Activator.CreateInstance(typeof(Query<>).MakeGenericType(type), subQueryProvider) as
                         IQueryable<object>;
             };
         }
 
-        private ResourceRetriever CreateResourceRetriever()
-        {
-            return new ResourceRetriever(_httpClient);
-        }
+        private ResourceRetriever CreateResourceRetriever() => new ResourceRetriever(_httpClient);
 
-        private static QueryBinderFactory CreateQueryBinderFactory()
+        private QueryBinderFactory CreateQueryBinderFactory()
         {
             var entityValidator = CreateEntityValidator();
             return () => new QueryBinder(entityValidator);
         }
 
-        private static EntityValidator CreateEntityValidator()
-        {
-            return new EntityValidator();
-        }
+        private EntityValidator CreateEntityValidator() => new EntityValidator();
     }
 }

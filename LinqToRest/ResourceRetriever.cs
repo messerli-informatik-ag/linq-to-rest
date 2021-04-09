@@ -6,11 +6,11 @@ using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using JetBrains.Annotations;
+using Messerli.ChangeCase;
 using Messerli.LinqToRest.Entities;
 using Messerli.Utility.Extension;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Soltys.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -94,7 +94,7 @@ namespace Messerli.LinqToRest
             return constructor.Invoke(parameters);
         }
 
-        private static Uri GetResourceUri(JToken token, Uri root)
+        private Uri GetResourceUri(JToken token, Uri root)
         {
             var uniqueIdentifier = GetField(typeof(string), token, nameof(IEntity.UniqueIdentifier));
 
@@ -128,7 +128,7 @@ namespace Messerli.LinqToRest
             return factory(type.GetInnerType(), root);
         }
 
-        private static object GetEnum(Type type, JToken token, string name)
+        private object GetEnum(Type type, JToken token, string name)
         {
             var candidate = GetField(typeof(string), token, name) as string
                 ?? throw new ArgumentException($"Property '{nameof(name)}' was not found in json!");
@@ -136,9 +136,9 @@ namespace Messerli.LinqToRest
             return candidate.ParseToEnumElement(type);
         }
 
-        private static object GetField(Type type, JToken token, string name)
+        private object GetField(Type type, JToken token, string name)
         {
-            var fieldName = name.CamelCase();
+            var fieldName = name.ToCamelCase();
 
             if (TryGetValue(token, type, fieldName, out var fieldValue))
             {

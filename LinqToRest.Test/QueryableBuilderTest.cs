@@ -1,4 +1,8 @@
 using System;
+using System.Threading.Tasks;
+using Messerli.ChangeCase;
+using Messerli.LinqToRest.Async;
+using Messerli.LinqToRest.Entities;
 using Messerli.LinqToRest.Test.Stub;
 using RichardSzalay.MockHttp;
 using Xunit;
@@ -13,7 +17,7 @@ namespace Messerli.LinqToRest.Test
             var builder = new QueryableBuilder();
             Assert.Throws<QueryableBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
-        
+
         [Fact]
          public void ReturnsQueryable()
         {
@@ -21,10 +25,10 @@ namespace Messerli.LinqToRest.Test
             var queryable = builder
                 .Root(RootStub)
                 .Build<EntityWithQueryableMember>();
-            
+
             Assert.NotNull(queryable);
-        } 
-        
+        }
+
         [Fact]
         public void HttpClientCanBeConfigured()
         {
@@ -34,7 +38,7 @@ namespace Messerli.LinqToRest.Test
                 .HttpClient(httpClient)
                 .Root(RootStub)
                 .Build<EntityWithQueryableMember>();
-            
+
             Assert.NotNull(queryable);
         }
 
@@ -45,7 +49,7 @@ namespace Messerli.LinqToRest.Test
             builder
                 .HttpClient(null)
                 .Root(RootStub);
-            
+
             Assert.Throws<QueryableBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
 
@@ -54,10 +58,39 @@ namespace Messerli.LinqToRest.Test
         {
             var builder = new QueryableBuilder();
             builder.Root(null);
-            
+
             Assert.Throws<QueryableBuilderException>(() => builder.Build<EntityWithQueryableMember>());
         }
-        
+
+        [Fact]
+        public async Task CustomResourceNamingPolicyIsRespected()
+        {
+            var httpClient = new HttpClientMockBuilder()
+                .JsonResponse("/entity-with-more-than-one-words", "[{ \"uniqueIdentifier\": \"foo\", \"stringProperty\": \"bar\" }]")
+                .Build();
+
+            var queryable = new QueryableBuilder()
+                .Root(RootStub)
+                .HttpClient(httpClient)
+                .ResourceNamingPolicy(NamingPolicy.KebabCasePlural)
+                .Build<EntityWithMoreThanOneWord>();
+
+            Assert.Single(await queryable.ToArrayAsync(), new EntityWithMoreThanOneWord("foo", "bar"));
+        }
+
         private static Uri RootStub => new Uri("https://www.example.com");
+    }
+
+    internal sealed record EntityWithMoreThanOneWord : IEntity
+    {
+        public EntityWithMoreThanOneWord(string uniqueIdentifier, string stringProperty)
+        {
+            UniqueIdentifier = uniqueIdentifier;
+            StringProperty = stringProperty;
+        }
+
+        public string UniqueIdentifier { get; }
+
+        public string StringProperty { get; }
     }
 }

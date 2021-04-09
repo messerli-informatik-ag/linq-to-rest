@@ -11,13 +11,15 @@ namespace Messerli.LinqToRest
 {
     internal class QueryFormatter : ExpressionVisitor
     {
+        private readonly INamingPolicy _resourceNamingPolicy;
         private StringBuilder _stringBuilder;
         private readonly Uri _root;
         private bool _hasParameters = false;
 
-        public QueryFormatter(Uri root)
+        public QueryFormatter(Uri root, INamingPolicy resourceNamingPolicy)
         {
             _root = root;
+            _resourceNamingPolicy = resourceNamingPolicy;
         }
 
         internal string Format(Expression expression)
@@ -150,8 +152,8 @@ namespace Messerli.LinqToRest
             Visit(field.Expression);
         }
 
-        private static string FormatRoute(string route)
-            => Pluralizer.Pluralize(route.Split('.').Last().ToLower());
+        private string FormatRoute(string route)
+            => _resourceNamingPolicy.ConvertName(route.Split('.').Last());
 
         private void AppendParameterSeparator()
         {
