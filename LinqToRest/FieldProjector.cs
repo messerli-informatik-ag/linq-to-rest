@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
-using Soltys.ChangeCase;
+using Messerli.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -34,7 +34,7 @@ namespace Messerli.LinqToRest
 
         private void AddUniqueIdentifier()
         {
-            var name = nameof(IEntity.UniqueIdentifier).CamelCase();
+            var name = nameof(IEntity.UniqueIdentifier).ToCamelCase();
 
             if (!_fields.Any() || _fields.Any(field => field.Name == name))
             {

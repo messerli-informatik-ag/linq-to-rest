@@ -1,10 +1,10 @@
 using JetBrains.Annotations;
 using Messerli.LinqToRest.Entities;
-using Soltys.ChangeCase;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using Messerli.ChangeCase;
 
 namespace Messerli.LinqToRest
 {
@@ -41,12 +41,12 @@ namespace Messerli.LinqToRest
             }
         }
 
-        private static void ValidateThatPropertiesAndParateresMatch(MemberInfo type, IEnumerable<PropertyInfo> properties, IEnumerable<ParameterInfo> parameters)
+        private void ValidateThatPropertiesAndParateresMatch(MemberInfo type, IEnumerable<PropertyInfo> properties, IEnumerable<ParameterInfo> parameters)
         {
             foreach (var tuple in parameters.Zip(properties, (parameter, property) => new { parameter, property }))
             {
                 var propertyName = tuple.property.Name;
-                var expectedName = ChangeCaseExtensions.CamelCase(propertyName);
+                var expectedName = propertyName.ToCamelCase();
                 var expectedType = tuple.property.PropertyType;
                 var actualName = tuple.parameter.Name;
                 var actualType = tuple.parameter.ParameterType;

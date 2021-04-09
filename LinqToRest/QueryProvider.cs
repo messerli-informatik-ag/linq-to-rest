@@ -17,12 +17,14 @@ namespace Messerli.LinqToRest
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;
         private readonly Uri _root;
+        private readonly INamingPolicy _resourceNamingPolicy;
 
-        public QueryProvider(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory, Uri root)
+        public QueryProvider(IResourceRetriever resourceRetriever, QueryBinderFactory queryBinderFactory, Uri root, INamingPolicy resourceNamingPolicy)
         {
             _resourceRetriever = resourceRetriever;
             _queryBinderFactory = queryBinderFactory;
             _root = root;
+            _resourceNamingPolicy = resourceNamingPolicy;
         }
 
         public string GetQueryText(Expression expression)
@@ -82,7 +84,7 @@ namespace Messerli.LinqToRest
             expression = Evaluator.PartialEval(expression);
             var queryBinder = _queryBinderFactory();
             var proj = (ProjectionExpression)queryBinder.Bind(expression);
-            var commandText = new QueryFormatter(_root).Format(proj.Source);
+            var commandText = new QueryFormatter(_root, _resourceNamingPolicy).Format(proj.Source);
             var projector = new ProjectionBuilder().Build(proj.Projector);
 
             return new TranslateResult(commandText, projector);

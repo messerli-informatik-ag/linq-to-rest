@@ -10,6 +10,8 @@ namespace Messerli.LinqToRest
 
         IQueryableBuilder HttpClient(HttpClient httpClient);
 
+        IQueryableBuilder ResourceNamingPolicy(INamingPolicy namingPolicy);
+
         IQueryable<T> Build<T>();
     }
 }
