@@ -33,7 +33,7 @@ namespace Messerli.LinqToRest
         }
 
         public static T ParseToEnumElement<T>(this string candidate) where T : struct
-            => candidate.TryParseEnum<T>().GetOrElse(
+            => candidate.ParseEnumOrNone<T>().GetOrElse(
                    () => throw new InvalidEnumArgumentException(candidate));
     }
 }
