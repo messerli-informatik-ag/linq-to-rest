@@ -75,3 +75,6 @@
 
 ## 0.6.6
 - Fixed: Remove not needed generic parameter from `BuildResourceRetriever`.
+
+## 0.7.0
+- Replace exposed `ResourceRetriever` with new extension method on `IQueryable`: `ExecuteCustomAsync`.
