@@ -14,6 +14,6 @@ namespace Messerli.LinqToRest
 
         IQueryable<T> Build<T>();
 
-        IResourceRetriever BuildResourceRetriever<T>();
+        IResourceRetriever BuildResourceRetriever();
     }
 }
