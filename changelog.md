@@ -67,8 +67,11 @@
       .Build<Entity>();
   ```
 
-## 0.6.5
+## 0.6.5 (removed)
 - Allow creation of `IResourceRetriever` via the existing `QueryableBuilder`:
   ```csharp
   var queryable = new QueryableBuilder().BuildResourceRetriever();
   ```
+
+## 0.6.6
+- Fixed: Remove accidentally added, but not needed generic parameter from `BuildResourceRetriever`.

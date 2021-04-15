@@ -89,7 +89,7 @@ namespace Messerli.LinqToRest.Test
             var resourceRetriever = new QueryableBuilder()
                 .Root(RootStub)
                 .HttpClient(httpClient)
-                .BuildResourceRetriever<EntityWithMoreThanOneWord>();
+                .BuildResourceRetriever();
 
             Assert.Single(
                 await resourceRetriever.RetrieveResource<IEnumerable<EntityWithMoreThanOneWord>>(new Uri($"{RootStub}custom-url")),
