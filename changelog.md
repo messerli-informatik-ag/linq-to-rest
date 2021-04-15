@@ -64,5 +64,11 @@
   ```csharp
   var queryable = new QueryableBuilder()
       .ResourceNamingPolicy(KebabCasePlural.Plural)
-      .Build();
+      .Build<Entity>();
+  ```
+
+## 0.6.5
+- Allow creation of `IResourceRetriever` via the existing `QueryableBuilder`:
+  ```csharp
+  var queryable = new QueryableBuilder().BuildResourceRetriever();
   ```
