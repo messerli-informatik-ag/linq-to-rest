@@ -45,8 +45,6 @@ namespace Messerli.LinqToRest
             return new Query<T>(queryProvider);
         }
 
-        public IResourceRetriever BuildResourceRetriever() => CreateResourceRetriever();
-
         private void ValidateConfiguration()
         {
             if (_uri is null)
