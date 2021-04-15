@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using Messerli.ChangeCase;
 using Messerli.LinqToRest.Async;
@@ -76,6 +77,23 @@ namespace Messerli.LinqToRest.Test
                 .Build<EntityWithMoreThanOneWord>();
 
             Assert.Single(await queryable.ToArrayAsync(), new EntityWithMoreThanOneWord("foo", "bar"));
+        }
+
+        [Fact]
+        public async Task ResourceCanBeRetrievedUsingResourceRetriever()
+        {
+            var httpClient = new HttpClientMockBuilder()
+                .JsonResponse("/custom-url", "[{ \"uniqueIdentifier\": \"foo\", \"stringProperty\": \"bar\" }]")
+                .Build();
+
+            var resourceRetriever = new QueryableBuilder()
+                .Root(RootStub)
+                .HttpClient(httpClient)
+                .BuildResourceRetriever<EntityWithMoreThanOneWord>();
+
+            Assert.Single(
+                await resourceRetriever.RetrieveResource<IEnumerable<EntityWithMoreThanOneWord>>(new Uri($"{RootStub}custom-url")),
+                new EntityWithMoreThanOneWord("foo", "bar"));
         }
 
         private static Uri RootStub => new Uri("https://www.example.com");

@@ -13,5 +13,7 @@ namespace Messerli.LinqToRest
         IQueryableBuilder ResourceNamingPolicy(INamingPolicy namingPolicy);
 
         IQueryable<T> Build<T>();
+
+        IResourceRetriever BuildResourceRetriever<T>();
     }
 }
