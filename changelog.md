@@ -74,4 +74,4 @@
   ```
 
 ## 0.6.6
-- Fixed: Remove accidentally added, but not needed generic parameter from `BuildResourceRetriever`.
+- Fixed: Remove not needed generic parameter from `BuildResourceRetriever`.
