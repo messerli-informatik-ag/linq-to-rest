@@ -1,7 +1,6 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Messerli.ChangeCase;
 using Messerli.LinqToRest.Async;
 using Messerli.LinqToRest.Entities;
 using Messerli.LinqToRest.Test.Stub;
@@ -86,17 +85,52 @@ namespace Messerli.LinqToRest.Test
                 .JsonResponse("/custom-url", "[{ \"uniqueIdentifier\": \"foo\", \"stringProperty\": \"bar\" }]")
                 .Build();
 
-            var resourceRetriever = new QueryableBuilder()
+            var queryable = new QueryableBuilder()
                 .Root(RootStub)
                 .HttpClient(httpClient)
-                .BuildResourceRetriever();
+                .Build<EntityWithMoreThanOneWord>();
 
             Assert.Single(
-                await resourceRetriever.RetrieveResource<IEnumerable<EntityWithMoreThanOneWord>>(new Uri($"{RootStub}custom-url")),
+                await queryable.ExecuteCustomAsync(new Uri($"{RootStub}custom-url")),
                 new EntityWithMoreThanOneWord("foo", "bar"));
         }
 
+        [Fact]
+        public async Task ResourceWithQueryableCanBeRetrievedUsingResourceRetriever()
+        {
+            var httpClient = new HttpClientMockBuilder()
+                .JsonResponse("/custom/url", "[{ \"uniqueIdentifier\": \"foo\" }]")
+                .JsonResponse("/entity-with-queryables/foo/entity-with-more-than-one-words", "[{ \"uniqueIdentifier\": \"foo\", \"stringProperty\": \"bar\" }]")
+                .Build();
+
+            var query = new QueryableBuilder()
+                .Root(RootStub)
+                .ResourceNamingPolicy(NamingPolicy.KebabCasePlural)
+                .HttpClient(httpClient)
+                .Build<EntityWithQueryable>();
+
+            var entities = await query.ExecuteCustomAsync(new Uri($"{RootStub}custom/url"));
+            var entity = entities.Single();
+            Assert.Equal("foo", entity.UniqueIdentifier);
+
+            var childEntity = (await entity.Queryable.ToListAsync()).Single();
+            Assert.Equal(new EntityWithMoreThanOneWord("foo", "bar"), childEntity);
+        }
+
         private static Uri RootStub => new Uri("https://www.example.com");
+    }
+
+    internal sealed record EntityWithQueryable : IEntity
+    {
+        public EntityWithQueryable(string uniqueIdentifier, IQueryable<EntityWithMoreThanOneWord> queryable)
+        {
+            UniqueIdentifier = uniqueIdentifier;
+            Queryable = queryable;
+        }
+
+        public string UniqueIdentifier { get; }
+
+        public IQueryable<EntityWithMoreThanOneWord> Queryable { get; }
     }
 
     internal sealed record EntityWithMoreThanOneWord : IEntity

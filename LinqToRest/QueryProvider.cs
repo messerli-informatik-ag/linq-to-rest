@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using JetBrains.Annotations;
 using Messerli.LinqToRest.Expressions;
 using Messerli.QueryProvider;
 
@@ -12,7 +13,7 @@ namespace Messerli.LinqToRest
 {
     public delegate QueryBinder QueryBinderFactory();
 
-    public class QueryProvider : IStringifyableQueryProvider
+    public class QueryProvider : IStringifyableQueryProvider, IRestQueryProvider
     {
         private readonly IResourceRetriever _resourceRetriever;
         private readonly QueryBinderFactory _queryBinderFactory;
@@ -44,6 +45,9 @@ namespace Messerli.LinqToRest
         }
 
         public TResult ExecuteAsync<TResult>(Expression expression, CancellationToken cancellationToken = default)
+            => ExecuteAsync<TResult>(expression, customRequestUri: null, cancellationToken);
+
+        public TResult ExecuteAsync<TResult>(Expression expression, [CanBeNull] Uri customRequestUri = null, CancellationToken cancellationToken = default)
         {
             // Validate Generic Type is a Task (might need to be adjusted if we need to support ValueTasks as well)
             if (!IsGenericTaskType(typeof(TResult)))
@@ -55,11 +59,13 @@ namespace Messerli.LinqToRest
             var uri = new Uri(result.CommandText, _root.IsAbsoluteUri ? UriKind.Absolute : UriKind.Relative);
             var elementType = TypeSystem.GetElementType(expression.Type);
             var enumerableType = typeof(IEnumerable<>).MakeGenericType(elementType);
+            var arguments = new object[] { enumerableType, uri, customRequestUri ?? uri, cancellationToken };
 
-            var methodToExecute = typeof(ResourceRetriever).GetMethods()
+            var methodToExecute = typeof(ResourceRetriever).GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(method => method.GetParameters().Length == arguments.Length)
                 .Single(method => method.Name == nameof(ResourceRetriever.RetrieveResource) && !method.IsGenericMethod);
 
-            return (TResult)methodToExecute.Invoke(_resourceRetriever, new object[] { enumerableType, uri, cancellationToken});
+            return (TResult)methodToExecute.Invoke(_resourceRetriever, arguments);
         }
 
         // Copied from https://github.com/messerli-informatik-ag/query-provider/blob/master/QueryProvider/QueryProvider.cs

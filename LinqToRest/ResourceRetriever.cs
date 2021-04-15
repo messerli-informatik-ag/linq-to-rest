@@ -28,23 +28,31 @@ namespace Messerli.LinqToRest
             _httpClient = httpClient;
         }
 
-        public async Task<T> RetrieveResource<T>(Uri uri, CancellationToken cancellationToken = default)
+        public Task<T> RetrieveResource<T>(Uri uri, CancellationToken cancellationToken = default) => RetrieveResource<T>(uri, uri, cancellationToken);
+
+        internal async Task<T> RetrieveResource<T>(Uri uri, Uri requestUri, CancellationToken cancellationToken = default)
         {
-            var content = await GetContent(uri, cancellationToken).ConfigureAwait(false);
+            var content = await GetContent(requestUri, cancellationToken).ConfigureAwait(false);
 
             return typeof(T).IsEnumerable()
                 ? DeserializeArray<T>(content, uri)
                 : DeserializeObject<T>(content, uri);
         }
 
-        public async Task<object> RetrieveResource(Type type, Uri uri, CancellationToken cancellationToken = default)
+        internal async Task<object> RetrieveResource(Type type, Uri uri, CancellationToken cancellationToken = default)
+            => await RetrieveResource(type, uri, uri, cancellationToken);
+
+        internal async Task<object> RetrieveResource(Type type, Uri uri, Uri requestUri, CancellationToken cancellationToken = default)
         {
+            var parameters = new object[] { uri, requestUri, cancellationToken };
             var method = typeof(ResourceRetriever)
-                .GetMethods()
+                .GetMethods(BindingFlags.Instance | BindingFlags.NonPublic)
+                .Where(m => m.IsGenericMethod)
+                .Where(m => m.GetParameters().Length == parameters.Length)
                 .First(m => m.Name == nameof(RetrieveResource))
                 .MakeGenericMethod(type);
 
-            var task = (Task)method.Invoke(this, new object[] { uri, cancellationToken });
+            var task = (Task)method.Invoke(this, parameters);
             await task.ConfigureAwait(false);
             var resultProperty = task.GetType().GetProperty(nameof(Task<object>.Result)) ??
                                  throw new MissingMemberException();
