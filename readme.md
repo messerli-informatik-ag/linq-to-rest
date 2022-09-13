@@ -1,3 +1,6 @@
+> **Note** \
+> This project is no longer actively maintained.
+
 # LinqToRest
 
 [![Build](https://github.com/messerli-informatik-ag/linq-to-rest/workflows/Build/badge.svg)](https://github.com/messerli-informatik-ag/linq-to-rest/actions?query=workflow%3ABuild)
